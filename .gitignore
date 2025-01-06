@@ -1,0 +1,24 @@
+# Игнорировать .log файлы
+*.log
+*.jar
+
+.gradle/
+build/
+.gradle-wrapper.jar
+.gradle-wrapper.properties
+gradle-wrapper.jar
+gradle-wrapper.properties
+
+# Игнорировать папки
+target/
+frontend/node_modules/
+.idea/
+out/
+logs/
+lib/
+
+# Исключения: не игнорировать указанные файлы или папки
+/backend/.gradle/
+/backend/build/
+/backend/src/main/.idea/
+backend/gradlew.bat
