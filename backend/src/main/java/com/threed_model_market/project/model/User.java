@@ -1,13 +1,15 @@
 package com.threed_model_market.project.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
 @Getter
 @Setter
+@ToString(exclude = "userImage")
+@EqualsAndHashCode(of = "id")
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -24,26 +26,24 @@ public class User {
     private String email;
 
     @Column(name = "passwordhash", nullable = false)
-    private String passwordhash;
+    private String passwordHash;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "roleid", nullable = false)
     private Role role;
 
     @Column(name = "registrationdate", nullable = false, updatable = false)
-    private Instant registrationdate;
+    private Instant registrationDate;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,  fetch = FetchType.LAZY)
     private UserImage userImage;
 
-    protected User() {
-    }
-
-    public User(String email, String username, String passwordhash, Role role) {
+    @Builder
+    public User(String email, String username, String passwordHash, Role role) {
         this.email = email;
         this.username = username;
-        this.passwordhash = passwordhash;
+        this.passwordHash = passwordHash;
         this.role = role;
-        this.registrationdate = Instant.now();
+        this.registrationDate = Instant.now();
     }
 }

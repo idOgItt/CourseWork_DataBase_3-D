@@ -47,7 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void authenticateAndAssignRole(User user, String rawPassword) {
-        if (authenticate(rawPassword, user.getPasswordhash())) {
+        if (authenticate(rawPassword, user.getPasswordHash())) {
             assignClientRoleAfterAuthentication(user);
         } else {
             throw new UserInvalidPasswordException("Authentication failed");

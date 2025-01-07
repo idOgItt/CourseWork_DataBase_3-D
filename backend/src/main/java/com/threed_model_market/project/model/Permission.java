@@ -2,6 +2,7 @@ package com.threed_model_market.project.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "permissions")
 public class Permission {
 
@@ -30,9 +32,6 @@ public class Permission {
     @ManyToMany(mappedBy = "permissions")
     @JsonIgnoreProperties("permissions")
     private List<Role> roles = new ArrayList<>();
-
-    protected Permission() {
-    }
 
     public Permission(String permissionName, String description) {
         this.permissionName = permissionName;

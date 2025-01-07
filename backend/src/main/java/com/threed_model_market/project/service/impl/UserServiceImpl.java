@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
         user.setEmail(dto.getEmail());
         user.setUsername(dto.getUsername());
-        user.setPasswordhash(passwordEncoder.passwordEncoder().encode(dto.getPassword()));
+        user.setPasswordHash(passwordEncoder.passwordEncoder().encode(dto.getPassword()));
 
         Role newRole = roleRepository.findByRolename(dto.getRole().getRoleName())
                 .orElseThrow(() -> new RoleNotFoundException("Role not found"));
@@ -215,7 +215,7 @@ public class UserServiceImpl implements UserService {
     public void changeUserPassword(Long id, String newPassword){
         User user = getUserById(id);
         String hashedPassword = passwordEncoder.passwordEncoder().encode(newPassword);
-        user.setPasswordhash(hashedPassword);
+        user.setPasswordHash(hashedPassword);
         saveUser(user);
     }
 

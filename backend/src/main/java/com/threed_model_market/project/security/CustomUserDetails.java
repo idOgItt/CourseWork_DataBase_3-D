@@ -19,7 +19,7 @@ public class CustomUserDetails implements UserDetails {
 
     public CustomUserDetails(User user) {
         this.username = user.getUsername();
-        this.password = user.getPasswordhash();
+        this.password = user.getPasswordHash();
         this.authorities = user.getRole().getPermissions().stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermissionName()))
                 .collect(Collectors.toList());
