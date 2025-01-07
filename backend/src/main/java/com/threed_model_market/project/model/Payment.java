@@ -1,6 +1,5 @@
 package com.threed_model_market.project.model;
 
-import com.threed_model_market.project.Order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -37,4 +36,12 @@ public class Payment {
 
     @Column(name = "paymentdate", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Instant paymentDate;
+
+    public enum PaymentMethod {
+        CREDIT_CARD, PAYPAL, BANK_TRANSFER, CASH
+    }
+
+    public enum Status {
+        PENDING, COMPLETED, FAILED, CANCELLED
+    }
 }

@@ -56,7 +56,7 @@ CREATE TABLE Models (
                         CategoryID INT REFERENCES Categories(CategoryID),
                         Rating DECIMAL(3, 2) DEFAULT 0.0,
                         QuantityAvailable INT NOT NULL CHECK (QuantityAvailable >= 0),
-                        Status VARCHAR(20) NOT NULL CHECK (Status IN ('ACTIVE', 'INACTIVE', 'ARCHIVED')),
+                        Status VARCHAR(20) NOT NULL CHECK (Status IN ('ACTIVE', 'INACTIVE', 'ARCHIVED', 'PENDING')) DEFAULT 'PENDING',
                         DateAdded TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -76,7 +76,7 @@ CREATE TABLE Orders (
                         UserID INT REFERENCES Users(UserID),
                         OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         TotalAmount MONEY NOT NULL CHECK (TotalAmount >= 0::MONEY),
-                        Status VARCHAR(20) NOT NULL CHECK (Status IN ('PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED')),
+                        Status VARCHAR(20) NOT NULL CHECK (Status IN ('PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED')) DEFAULT 'PENDING',
                         DiscountCode VARCHAR(50),
                         CONSTRAINT fk_discount_code FOREIGN KEY (DiscountCode) REFERENCES Discounts(Code)
 );
@@ -102,7 +102,8 @@ CREATE TABLE Payments (
                           OrderID INT REFERENCES Orders(OrderID),
                           Amount MONEY NOT NULL CHECK (Amount >= 0::MONEY),
                           PaymentMethod VARCHAR(50) NOT NULL CHECK (PaymentMethod IN ('CREDIT_CARD', 'PAYPAL', 'BANK_TRANSFER', 'CASH')),
-                          PaymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                          PaymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          Status VARCHAR(20) NOT NULL CHECK (Status IN ('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED')) DEFAULT 'PENDING'
 );
 
 CREATE TABLE ActionTypes (

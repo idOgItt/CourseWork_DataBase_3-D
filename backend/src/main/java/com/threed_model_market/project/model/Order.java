@@ -33,4 +33,8 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "discountcode", referencedColumnName = "code")
     private Discount discount;
+
+    public enum Status {
+        PENDING, PAID, SHIPPED, DELIVERED, CANCELLED
+    }
 }

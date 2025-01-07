@@ -23,13 +23,13 @@ public class Permission {
     private Integer id;
 
     @SuppressWarnings("SpellCheckingInspection")
-    @Column(name = "permissionname")
+    @Column(name = "permissionname", unique = true)
     private String permissionName;
 
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(mappedBy = "permissions")
+    @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
     @JsonIgnoreProperties("permissions")
     private List<Role> roles = new ArrayList<>();
 

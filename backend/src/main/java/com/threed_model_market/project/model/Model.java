@@ -67,4 +67,8 @@ public class Model {
 
     @OneToMany(mappedBy = "model", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
+
+    public enum Status {
+        ACTIVE, INACTIVE, ARCHIVED, PENDING
+    }
 }

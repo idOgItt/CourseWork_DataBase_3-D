@@ -49,4 +49,8 @@ public class Discount {
     @ColumnDefault("0")
     @Column(name = "timesused", nullable = false)
     private Integer timesUsed = 0;
+
+    public enum DiscountType {
+        FIXED, PERCENT
+    }
 }
