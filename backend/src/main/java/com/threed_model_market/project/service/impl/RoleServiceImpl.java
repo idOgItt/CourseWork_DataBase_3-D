@@ -6,10 +6,8 @@ import com.threed_model_market.project.exception_handler.exceptions.Permission.P
 import com.threed_model_market.project.exception_handler.exceptions.Role.RoleNotFoundException;
 import com.threed_model_market.project.model.Permission;
 import com.threed_model_market.project.model.Role;
-import com.threed_model_market.project.model.User;
 import com.threed_model_market.project.repository.PermissionRepository;
 import com.threed_model_market.project.repository.RoleRepository;
-import com.threed_model_market.project.repository.UserRepository;
 import com.threed_model_market.project.service.RoleService;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +19,10 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
-    private final UserRepository userRepository;
 
-    public RoleServiceImpl(RoleRepository roleRepository, PermissionRepository permissionRepository, UserRepository userRepository) {
+    public RoleServiceImpl(RoleRepository roleRepository, PermissionRepository permissionRepository) {
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -63,18 +59,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void removeRole(Long roleId) {
-        Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new RoleNotFoundException("Role not found"));
-
-        Role guestRole = roleRepository.findByRolename("GUEST")
-                .orElseThrow(() -> new RoleNotFoundException("Role 'GUEST' not found"));
-
-        List<User> usersWithRole = userRepository.findByRole(role);
-        for (User user : usersWithRole) {
-            user.setRole(guestRole);
-            userRepository.save(user);
-        }
-
         roleRepository.deleteById(roleId);
     }
 

@@ -1,6 +1,6 @@
 package com.threed_model_market.project.service.impl;
 
-import com.threed_model_market.project.Model;
+import com.threed_model_market.project.model.Model;
 import com.threed_model_market.project.dto.ImageDto;
 import com.threed_model_market.project.exception_handler.exceptions.Image.ImageNotFoundException;
 import com.threed_model_market.project.model.Image;
