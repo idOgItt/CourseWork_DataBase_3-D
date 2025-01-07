@@ -10,8 +10,6 @@ import com.threed_model_market.project.model.User;
 
 import com.threed_model_market.project.repository.RoleRepository;
 import com.threed_model_market.project.repository.UserRepository;
-import com.threed_model_market.project.security.CustomUserDetails;
-import com.threed_model_market.project.security.CustomUserDetailsService;
 import com.threed_model_market.project.security.JwtTokenProvider;
 import com.threed_model_market.project.service.AuthenticationService;
 import com.threed_model_market.project.service.UserService;
@@ -20,12 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.threed_model_market.project.util.ValidationUtils.isValidEmail;
 
@@ -38,17 +34,13 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordConfig passwordEncoder;
     private final AuthenticationService authenticationService;
-    private final AuthenticationManager authenticationManager;
-    private final CustomUserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordConfig passwordEncoder, AuthenticationService authenticationService, AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordConfig passwordEncoder, AuthenticationService authenticationService, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationService = authenticationService;
-        this.authenticationManager = authenticationManager;
-        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -79,22 +71,17 @@ public class UserServiceImpl implements UserService {
     public String authenticateUser(UserDto userDto) throws UserInvalidPasswordException, UserNotFoundMailException, UserInvalidMailFormatException {
         logger.info("Authenticating user with email: {}", userDto.getEmail());
 
-        Optional<User> userOptional = userRepository.findByEmail(userDto.getEmail());
-        User user = userOptional.orElseThrow(() -> new UserNotFoundMailException("User not found"));
+        User user = userRepository.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new UserNotFoundMailException("User not found"));
 
-        if (!authenticationService.authenticate(userDto.getPassword(), user.getPasswordhash())) {
-            throw new UserInvalidPasswordException("Invalid password");
-        }
+        authenticationService.authenticateAndAssignRole(user, userDto.getPassword());
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
+        authenticationService.updateAuthenticationAfterRoleChange(user);
 
-        authenticationManager.authenticate(authenticationToken);
-
-        CustomUserDetails userDetails = userDetailsService.loadUserByUsername(userDto.getEmail());
+        List<GrantedAuthority> authorities = authenticationService.getAuthoritiesForUser(user);
 
         logger.info("User with email {} authenticated successfully", userDto.getEmail());
-        return jwtTokenProvider.generateToken(userDetails.getUsername(), userDetails.getUserId(), userDetails.getAuthorities());
+        return jwtTokenProvider.generateToken(user.getEmail(), user.getId(), authorities);
     }
 
     @Override

@@ -1,9 +1,13 @@
 package com.threed_model_market.project.service.impl;
 
 import com.threed_model_market.project.config.PasswordConfig;
+import com.threed_model_market.project.exception_handler.exceptions.Role.RoleNotFoundException;
+import com.threed_model_market.project.exception_handler.exceptions.User.UserInvalidPasswordException;
 import com.threed_model_market.project.exception_handler.exceptions.User.UserNotFoundException;
 import com.threed_model_market.project.model.Permission;
+import com.threed_model_market.project.model.Role;
 import com.threed_model_market.project.model.User;
+import com.threed_model_market.project.repository.RoleRepository;
 import com.threed_model_market.project.repository.UserRepository;
 import com.threed_model_market.project.service.AuthenticationService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,14 +24,16 @@ import java.util.List;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final PasswordConfig bCryptPasswordEncoder;
-
+    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
-    public AuthenticationServiceImpl(PasswordConfig bCryptPasswordEncoder, UserRepository userRepository) {
+    public AuthenticationServiceImpl(PasswordConfig bCryptPasswordEncoder, RoleRepository roleRepository, UserRepository userRepository) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.roleRepository = roleRepository;
         this.userRepository = userRepository;
     }
 
+    @Override
     public boolean authenticate(String rawPassword, String storedHashedPassword) {
         return bCryptPasswordEncoder.passwordEncoder().matches(rawPassword, storedHashedPassword);
     }
@@ -36,17 +42,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void updateAuthenticationForUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
 
-        List<GrantedAuthority> authorities = new ArrayList<>();
+        updateAuthenticationAfterRoleChange(user);
+    }
 
-        if (user.getRole() != null) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRolename()));
-
-            for (Permission permission : user.getRole().getPermissions()) {
-                authorities.add(new SimpleGrantedAuthority(permission.getPermissionName()));
-            }
+    @Override
+    public void authenticateAndAssignRole(User user, String rawPassword) {
+        if (authenticate(rawPassword, user.getPasswordhash())) {
+            assignClientRoleAfterAuthentication(user);
         } else {
-            authorities.add(new SimpleGrantedAuthority("ROLE_GUEST"));
+            throw new UserInvalidPasswordException("Authentication failed");
         }
+    }
+
+    public void assignClientRoleAfterAuthentication(User user) {
+        Role clientRole = roleRepository.findByRolename("CLIENT")
+                .orElseThrow(() -> new RoleNotFoundException("Role CLIENT not found"));
+        if (!user.getRole().equals(clientRole)) {
+            user.setRole(clientRole);
+            userRepository.save(user);
+        }
+    }
+
+    @Override
+    public void updateAuthenticationAfterRoleChange(User user) {
+        List<GrantedAuthority> authorities = getAuthoritiesForUser(user);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 user.getUsername(),
@@ -55,5 +74,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    @Override
+    public List<GrantedAuthority> getAuthoritiesForUser(User user) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        if (user.getRole() != null) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRolename()));
+            for (Permission permission : user.getRole().getPermissions()) {
+                authorities.add(new SimpleGrantedAuthority(permission.getPermissionName()));
+            }
+        } else {
+            Role guestRole = roleRepository.findByRolename("GUEST")
+                    .orElseThrow(() -> new RoleNotFoundException("Role CLIENT not found"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + guestRole.getRolename()));
+            for (Permission permission : guestRole.getPermissions()) {
+                authorities.add(new SimpleGrantedAuthority(permission.getPermissionName()));
+            }
+        }
+        return authorities;
     }
 }
