@@ -12,12 +12,17 @@ class categories {
 class discounts {
    varchar(50) code
    money discountamount
-   varchar(20) discounttype
+   integer discounttype
    timestamp with time zone startdate
    timestamp with time zone enddate
    integer usagelimit
    integer timesused
    integer discountid
+}
+class discounttypes {
+   varchar(20) name
+   varchar(255) description
+   integer discounttypeid
 }
 class images {
    integer modelid
@@ -41,9 +46,14 @@ class models {
    integer categoryid
    numeric(3,2) rating
    integer quantityavailable
-   varchar(20) status
+   integer status
    timestamp dateadded
    integer modelid
+}
+class modelstatuses {
+   varchar(20) name
+   varchar(255) description
+   integer statusid
 }
 class orderitems {
    integer orderid
@@ -55,16 +65,32 @@ class orders {
    integer userid
    timestamp orderdate
    money totalamount
-   varchar(20) status
+   integer statusid
    varchar(50) discountcode
    integer orderid
+}
+class orderstatuses {
+   varchar(20) name
+   varchar(255) description
+   integer statusid
+}
+class paymentmethods {
+   varchar(50) name
+   varchar(255) description
+   integer paymentmethodid
 }
 class payments {
    integer orderid
    money amount
-   varchar(50) paymentmethod
+   integer paymentmethodid
+   integer paymentstatusid
    timestamp paymentdate
    integer paymentid
+}
+class paymentstatuses {
+   varchar(20) name
+   varchar(255) description
+   integer statusid
 }
 class permissions {
    varchar(50) permissionname
@@ -115,16 +141,21 @@ class users {
    integer userid
 }
 
+discounts  -->  discounttypes : discounttype:discounttypeid
 images  -->  models : modelid
 logs  -->  actiontypes : actiontypeid
 logs  -->  users : userid
 models  -->  categories : categoryid
+models  -->  modelstatuses : status:statusid
 models  -->  users : userid
 orderitems  -->  models : modelid
 orderitems  -->  orders : orderid
 orders  -->  discounts : discountcode:code
+orders  -->  orderstatuses : statusid
 orders  -->  users : userid
 payments  -->  orders : orderid
+payments  -->  paymentmethods : paymentmethodid
+payments  -->  paymentstatuses : paymentstatusid:statusid
 reviews  -->  models : modelid
 reviews  -->  users : userid
 rolepermissions  -->  permissions : permissionid

@@ -15,10 +15,15 @@ DROP TABLE IF EXISTS SuspiciousActionTypes CASCADE;
 DROP TABLE IF EXISTS SuspiciousLogs CASCADE;
 DROP TABLE IF EXISTS Images CASCADE;
 DROP TABLE IF EXISTS UserImages CASCADE;
+DROP TABLE IF EXISTS PaymentMethods CASCADE;
+DROP TABLE IF EXISTS DiscountTypes CASCADE;
+DROP TABLE IF EXISTS ModelStatuses CASCADE;
+DROP TABLE IF EXISTS OrderStatuses CASCADE;
+DROP TABLE IF EXISTS PaymentStatuses CASCADE;
 
 CREATE TABLE Roles (
                        RoleID SERIAL PRIMARY KEY,
-                       RoleName VARCHAR(20) NOT NULL UNIQUE DEFAULT 'GUEST'
+                       RoleName VARCHAR(20) NOT NULL UNIQUE
 );
 
 CREATE TABLE Permissions (
@@ -42,6 +47,36 @@ CREATE TABLE Users (
                        RegistrationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE PaymentMethods (
+                                PaymentMethodID SERIAL PRIMARY KEY,
+                                Name VARCHAR(50) NOT NULL UNIQUE,
+                                Description VARCHAR(255)
+);
+
+CREATE TABLE DiscountTypes (
+                               DiscountTypeID SERIAL PRIMARY KEY,
+                               Name VARCHAR(20) NOT NULL UNIQUE,
+                               Description VARCHAR(255)
+);
+
+CREATE TABLE ModelStatuses (
+                               StatusID SERIAL PRIMARY KEY,
+                               Name VARCHAR(20) NOT NULL UNIQUE DEFAULT 'PENDING',
+                               Description VARCHAR(255)
+);
+
+CREATE TABLE OrderStatuses (
+                               StatusID SERIAL PRIMARY KEY,
+                               Name VARCHAR(20) NOT NULL UNIQUE DEFAULT 'PENDING',
+                               Description VARCHAR(255)
+);
+
+CREATE TABLE PaymentStatuses (
+                                 StatusID SERIAL PRIMARY KEY,
+                                 Name VARCHAR(20) NOT NULL UNIQUE DEFAULT 'PENDING',
+                                 Description VARCHAR(255)
+);
+
 CREATE TABLE Categories (
                             CategoryID SERIAL PRIMARY KEY,
                             Name VARCHAR(100) NOT NULL UNIQUE
@@ -56,7 +91,7 @@ CREATE TABLE Models (
                         CategoryID INT REFERENCES Categories(CategoryID),
                         Rating DECIMAL(3, 2) DEFAULT 0.0,
                         QuantityAvailable INT NOT NULL CHECK (QuantityAvailable >= 0),
-                        Status VARCHAR(20) NOT NULL CHECK (Status IN ('ACTIVE', 'INACTIVE', 'ARCHIVED', 'PENDING')) DEFAULT 'PENDING',
+                        Status INT REFERENCES ModelStatuses(StatusID),
                         DateAdded TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -64,7 +99,7 @@ CREATE TABLE Discounts (
                            DiscountID SERIAL PRIMARY KEY,
                            Code VARCHAR(50) NOT NULL UNIQUE,
                            DiscountAmount MONEY NOT NULL CHECK (DiscountAmount >= 0::MONEY),
-                           DiscountType VARCHAR(20) NOT NULL CHECK (DiscountType IN ('FIXED', 'PERCENT')),
+                           DiscountType INT REFERENCES DiscountTypes(DiscountTypeID),
                            StartDate TIMESTAMPTZ NOT NULL,
                            EndDate TIMESTAMPTZ NOT NULL CHECK (EndDate > StartDate),
                            UsageLimit INT CHECK (UsageLimit >= 0),
@@ -76,7 +111,7 @@ CREATE TABLE Orders (
                         UserID INT REFERENCES Users(UserID),
                         OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         TotalAmount MONEY NOT NULL CHECK (TotalAmount >= 0::MONEY),
-                        Status VARCHAR(20) NOT NULL CHECK (Status IN ('PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED')) DEFAULT 'PENDING',
+                        StatusID INT REFERENCES OrderStatuses(StatusID),
                         DiscountCode VARCHAR(50),
                         CONSTRAINT fk_discount_code FOREIGN KEY (DiscountCode) REFERENCES Discounts(Code)
 );
@@ -101,9 +136,9 @@ CREATE TABLE Payments (
                           PaymentID SERIAL PRIMARY KEY,
                           OrderID INT REFERENCES Orders(OrderID),
                           Amount MONEY NOT NULL CHECK (Amount >= 0::MONEY),
-                          PaymentMethod VARCHAR(50) NOT NULL CHECK (PaymentMethod IN ('CREDIT_CARD', 'PAYPAL', 'BANK_TRANSFER', 'CASH')),
-                          PaymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                          Status VARCHAR(20) NOT NULL CHECK (Status IN ('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED')) DEFAULT 'PENDING'
+                          PaymentMethodID INT REFERENCES PaymentMethods(PaymentMethodID),
+                          PaymentStatusID INT REFERENCES PaymentStatuses(StatusID),
+                          PaymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE ActionTypes (
