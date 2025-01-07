@@ -65,33 +65,44 @@
 │   │   │   │               ├── Orderitem.java
 │   │   │   │               ├── Payment.java
 │   │   │   │               ├── Review.java
-│   │   │   │               ├── UserImage.java
 │   │   │   │               ├── config
 │   │   │   │               │   ├── CorsConfig.java
 │   │   │   │               │   ├── PasswordConfig.java
 │   │   │   │               │   └── RestApiConfig.java
-│   │   │   │               ├── contoller
+│   │   │   │               ├── controller
+│   │   │   │               │   ├── CategoryController.java
+│   │   │   │               │   ├── ImageController.java
 │   │   │   │               │   ├── OrderController.java
 │   │   │   │               │   ├── PermissionController.java
 │   │   │   │               │   ├── ProductController.java
 │   │   │   │               │   ├── RoleController.java
-│   │   │   │               │   └── UserController.java
+│   │   │   │               │   ├── UserController.java
+│   │   │   │               │   └── UserImageController.java
 │   │   │   │               ├── dto
 │   │   │   │               │   ├── CategoryDto.java
+│   │   │   │               │   ├── ImageDto.java
 │   │   │   │               │   ├── OrderDto.java
 │   │   │   │               │   ├── PaymentDto.java
 │   │   │   │               │   ├── PermissionDto.java
 │   │   │   │               │   ├── ProductDto.java
 │   │   │   │               │   ├── RoleDto.java
-│   │   │   │               │   └── UserDto.java
+│   │   │   │               │   ├── UserDto.java
+│   │   │   │               │   └── UserImageDto.java
 │   │   │   │               ├── exception_handler
+│   │   │   │               │   ├── CategoryExceptionHandler.java
 │   │   │   │               │   ├── GlobalExceptionHandler.java
+│   │   │   │               │   ├── ImageExceptionHandler.java
 │   │   │   │               │   ├── OrderNotFoundException.java
 │   │   │   │               │   ├── PermissionExceptionHandler.java
 │   │   │   │               │   ├── ProductNotFoundException.java
 │   │   │   │               │   ├── RoleExceptionHandler.java
 │   │   │   │               │   ├── UserExceptionHandler.java
+│   │   │   │               │   ├── UserImageExceptionHandler.java
 │   │   │   │               │   └── exceptions
+│   │   │   │               │       ├── Category
+│   │   │   │               │       │   └── CategoryNotFoundException.java
+│   │   │   │               │       ├── Image
+│   │   │   │               │       │   └── ImageNotFoundException.java
 │   │   │   │               │       ├── Patch
 │   │   │   │               │       │   └── PatchOperationNotSupportedException.java
 │   │   │   │               │       ├── Permission
@@ -100,29 +111,36 @@
 │   │   │   │               │       │   └── RoleNotFoundException.java
 │   │   │   │               │       ├── Security
 │   │   │   │               │       │   └── UnauthorizedAccessException.java
-│   │   │   │               │       └── User
-│   │   │   │               │           ├── UserAlreadyExistsException.java
-│   │   │   │               │           ├── UserInvalidMailFormatException.java
-│   │   │   │               │           ├── UserInvalidPasswordException.java
-│   │   │   │               │           ├── UserNotFoundException.java
-│   │   │   │               │           └── UserNotFoundMailException.java
+│   │   │   │               │       ├── User
+│   │   │   │               │       │   ├── UserAlreadyExistsException.java
+│   │   │   │               │       │   ├── UserInvalidMailFormatException.java
+│   │   │   │               │       │   ├── UserInvalidPasswordException.java
+│   │   │   │               │       │   ├── UserNotFoundException.java
+│   │   │   │               │       │   └── UserNotFoundMailException.java
+│   │   │   │               │       └── UserImage
+│   │   │   │               │           └── UserImageNotFoundException.java
 │   │   │   │               ├── model
 │   │   │   │               │   ├── Category.java
+│   │   │   │               │   ├── Image.java
 │   │   │   │               │   ├── Order.java
 │   │   │   │               │   ├── OrderItem.java
 │   │   │   │               │   ├── Payment.java
 │   │   │   │               │   ├── Permission.java
 │   │   │   │               │   ├── Product.java
 │   │   │   │               │   ├── Role.java
-│   │   │   │               │   └── User.java
+│   │   │   │               │   ├── User.java
+│   │   │   │               │   └── UserImage.java
 │   │   │   │               ├── repository
 │   │   │   │               │   ├── CategoryRepository.java
+│   │   │   │               │   ├── ImageRepository.java
+│   │   │   │               │   ├── ModelRepository.java
 │   │   │   │               │   ├── OrderItemRepository.java
 │   │   │   │               │   ├── OrderRepository.java
 │   │   │   │               │   ├── PaymentRepository.java
 │   │   │   │               │   ├── PermissionRepository.java
 │   │   │   │               │   ├── ProductRepository.java
 │   │   │   │               │   ├── RoleRepository.java
+│   │   │   │               │   ├── UserImageRepository.java
 │   │   │   │               │   └── UserRepository.java
 │   │   │   │               ├── security
 │   │   │   │               │   ├── Constants.java
@@ -134,26 +152,35 @@
 │   │   │   │               ├── service
 │   │   │   │               │   ├── AuthenticationService.java
 │   │   │   │               │   ├── CategoryService.java
+│   │   │   │               │   ├── ImageService.java
 │   │   │   │               │   ├── OrderItemService.java
 │   │   │   │               │   ├── OrderService.java
 │   │   │   │               │   ├── PaymentService.java
 │   │   │   │               │   ├── PermissionService.java
 │   │   │   │               │   ├── ProductService.java
 │   │   │   │               │   ├── RoleService.java
+│   │   │   │               │   ├── UserImageService.java
 │   │   │   │               │   ├── UserService.java
 │   │   │   │               │   └── impl
 │   │   │   │               │       ├── AuthenticationServiceImpl.java
 │   │   │   │               │       ├── CategoryServiceImpl.java
+│   │   │   │               │       ├── ImageServiceImpl.java
 │   │   │   │               │       ├── OrderServiceImpl.java
 │   │   │   │               │       ├── PermissionServiceImpl.java
 │   │   │   │               │       ├── ProductServiceImpl.java
 │   │   │   │               │       ├── RoleServiceImpl.java
+│   │   │   │               │       ├── UserImageServiceImpl.java
 │   │   │   │               │       └── UserServiceImpl.java
 │   │   │   │               └── util
+│   │   │   │                   ├── AccessValidator.java
 │   │   │   │                   └── ValidationUtils.java
-│   │   │   └── main.iml
-│   │   ├── resources
-│   │   │   └── application.yml
+│   │   │   ├── main.iml
+│   │   │   └── resources
+│   │   │       ├── META-INF
+│   │   │       │   └── additional-spring-configuration-metadata.json
+│   │   │       ├── application.yml
+│   │   │       └── db
+│   │   │           └── migration
 │   │   └── test
 │   │       └── java
 │   │           └── com
@@ -165,11 +192,17 @@
 │   │                       ├── ProductRepositoryTest.java
 │   │                       └── ProductServiceTest.java
 │   └── tests
+├── backup
+│   ├── Dockerfile
+│   ├── backup-cron
+│   └── backup.sh
 ├── build_and_run.sh
 ├── database
 │   ├── Dockerfile
 │   ├── README.md
-│   ├── migrations
+│   ├── backups
+│   │   └── backup_2025-01-07_19-49-30.sql
+│   ├── data
 │   └── schema
 │       ├── 01_init.sql
 │       ├── 02_functions.sql

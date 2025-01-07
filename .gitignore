@@ -16,6 +16,9 @@ frontend/node_modules/
 out/
 logs/
 lib/
+/database/data
+/database/backups
+
 
 # Исключения: не игнорировать указанные файлы или папки
 /backend/.gradle/

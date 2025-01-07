@@ -15,7 +15,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "images", schema = "public")
+@Table(name = "images")
 public class Image {
 
     @Id
