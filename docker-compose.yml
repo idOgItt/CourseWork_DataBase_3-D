@@ -12,9 +12,16 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_FLYWAY_ENABLED: true
+      SPRING_FLYWAY_LOCATIONS: classpath:/db/migration
+      SPRING_FLYWAY_BASELINE_ON_MIGRATE: true
+
+      DB_HOST: db
+      DB_PORT: "${DB_PORT}"
+      WAIT_TIMEOUT: 0
     env_file:
       - .env
-    entrypoint: ["java", "-jar", "/app/app.jar"]
+    entrypoint: ["docker-entrypoint.sh"]
 
   frontend:
     build:
@@ -23,9 +30,13 @@ services:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     depends_on:
       - backend
+    environment:
+      BACKEND_HOST: backend
+      BACKEND_PORT: "${SERVER_PORT}"
+      WAIT_TIMEOUT: 0
     env_file:
       - .env
-    entrypoint: ["nginx", "-g", "daemon off;"]
+    entrypoint: ["docker-entrypoint.sh"]
 
   db:
     build:
@@ -38,9 +49,28 @@ services:
       - "${DB_PORT}:${DB_PORT}"
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./database/migrations:/flyway/sql
     env_file:
       - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backup:
+    build:
+      context: ./backup
+    volumes:
+      - ./database/backups:/backups
+      - ./env:/env
+      - ./logs:/var/log/cron
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: "${DB_PORT}"
+      WAIT_TIMEOUT: 0
+    entrypoint: ["docker-entrypoint.sh"]
 
 volumes:
   db_data:
