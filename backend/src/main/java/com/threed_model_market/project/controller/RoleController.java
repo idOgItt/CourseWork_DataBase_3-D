@@ -1,4 +1,4 @@
-package com.threed_model_market.project.contoller;
+package com.threed_model_market.project.controller;
 
 import com.threed_model_market.project.dto.RoleDto;
 import com.threed_model_market.project.model.Role;
