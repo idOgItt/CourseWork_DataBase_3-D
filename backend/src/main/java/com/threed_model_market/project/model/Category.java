@@ -15,7 +15,7 @@ public class Category {
     @Id
     @ColumnDefault("nextval('categories_categoryid_seq'::regclass)")
     @Column(name = "categoryid", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 100)
     @NotNull

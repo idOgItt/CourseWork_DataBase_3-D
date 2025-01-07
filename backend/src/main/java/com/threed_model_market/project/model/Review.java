@@ -1,6 +1,5 @@
 package com.threed_model_market.project.model;
 
-import com.threed_model_market.project.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
