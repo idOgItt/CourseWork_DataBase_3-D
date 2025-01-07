@@ -72,3 +72,6 @@
 - Serving Static Content: Nginx is used to serve the static files for the frontend, including HTML, CSS, JavaScript, and images. These files are built by Vite and packaged by React. 
 - Reverse Proxy: Nginx acts as a reverse proxy to forward API requests from the frontend to the backend. It routes requests for /api/* endpoints to the backend service, ensuring smooth communication between the frontend and backend. 
 - Load Balancing and Security: Nginx can also be used for load balancing across multiple instances of the backend, enhancing scalability. Additionally, it can provide SSL/TLS termination for secure communication over HTTPS.
+
+## 13. Flyway
+-**Purpose**: Data base migration

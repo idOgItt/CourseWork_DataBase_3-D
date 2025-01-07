@@ -1,7 +1,5 @@
--- Заполнение таблицы Roles
 INSERT INTO Roles (RoleName) VALUES ('ADMIN'), ('CLIENT'), ('GUEST');
 
--- Заполнение таблицы Permissions
 INSERT INTO Permissions (PermissionID, PermissionName, Description) VALUES
                                                                         (1, 'MANAGE_USERS', 'Управление пользователями'),
                                                                         (2, 'VIEW_ORDERS', 'Просмотр заказов'),
@@ -14,7 +12,6 @@ INSERT INTO Permissions (PermissionID, PermissionName, Description) VALUES
                                                                         (9, 'MANAGE_ORDERS', 'Управление состояними заказов');
 
 
--- Заполнение таблицы RolePermissions
 INSERT INTO RolePermissions (RoleID, PermissionID) VALUES
                                                        (1, 1), -- ADMIN: MANAGE_USERS
                                                        (1, 2), -- ADMIN: VIEW_ORDERS

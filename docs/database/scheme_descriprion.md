@@ -92,9 +92,6 @@ class suspiciouslogs {
    timestamp timestamp
    integer logid
 }
-class total {
-   money sum
-}
 class users {
    varchar(50) username
    varchar(100) email
@@ -102,56 +99,6 @@ class users {
    integer roleid
    timestamp registrationdate
    integer userid
-}
-class v_discounts_analysis {
-   varchar(50) discountcode
-   money discountamount
-   varchar(20) discounttype
-   timestamp with time zone startdate
-   timestamp with time zone enddate
-   integer usagelimit
-   bigint ordersusingdiscount
-}
-class v_models_popularity {
-   integer modelid
-   varchar(100) modelname
-   varchar(100) category
-   bigint totalsold
-   bigint totalorders
-}
-class v_order_details {
-   integer orderid
-   varchar(50) user
-   timestamp orderdate
-   varchar(20) status
-   varchar(100) modelname
-   integer quantity
-   money linetotal
-}
-class v_orders_summary {
-   integer orderid
-   varchar(50) user
-   varchar(20) status
-   money totalamount
-   varchar(50) discountcode
-   text discountdetails
-   timestamp orderdate
-}
-class v_reviews_summary {
-   integer reviewid
-   varchar(50) reviewer
-   varchar(100) modelname
-   varchar(300) reviewtext
-   integer rating
-   timestamp reviewdate
-}
-class v_user_statistics {
-   integer userid
-   varchar(50) username
-   varchar(100) email
-   bigint totalorders
-   money totalspent
-   bigint totalreviews
 }
 
 logs  -->  actiontypes : actiontypeid

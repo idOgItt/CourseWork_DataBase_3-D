@@ -1,81 +1,51 @@
 package com.threed_model_market.project.model;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
+import com.threed_model_market.project.UserImage;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.Instant;
+
+@Getter
+@Setter
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userid", nullable = false)
     private Long id;
 
-    @Column(name = "user_email", unique = true, nullable = false)
-    private String email;
-
-    @Column(name = "user_username", unique = true, nullable = false)
+    @Column(name = "username", nullable = false, length = 50, unique = true)
     private String username;
 
-    @Column(name = "user_password", nullable = false)
-    private String password;
+    @Column(name = "email", nullable = false, length = 100, unique = true)
+    private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "user_roleid")
+    @Column(name = "passwordhash", nullable = false)
+    private String passwordhash;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "roleid", nullable = false)
     private Role role;
 
-    @Column(name = "user_registrationdate", nullable = false)
-    private Timestamp registrationdate;
+    @Column(name = "registrationdate", nullable = false)
+    private Instant registrationdate;
 
-    public User() {}
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserImage userImage;
 
-    public User(String email, String username, String password, Role role) {
+    protected User() {
+    }
+
+    public User(String email, String username, String passwordhash, Role role) {
         this.email = email;
         this.username = username;
-        this.password = password;
+        this.passwordhash = passwordhash;
         this.role = role;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public Timestamp getRegistrationdate() {
-        return registrationdate;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setUserName(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public void setRegistrationdate(Timestamp registrationdate) {
-        this.registrationdate = registrationdate;
+        this.registrationdate = Instant.now();
     }
 }

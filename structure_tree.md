@@ -5,6 +5,43 @@
 ├── README.md
 ├── backend
 │   ├── Dockerfile
+│   ├── build
+│   │   ├── classes
+│   │   │   └── java
+│   │   │       ├── main
+│   │   │       │   └── com
+│   │   │       │       └── threed_model_market
+│   │   │       │           └── project
+│   │   │       │               ├── Application.class
+│   │   │       │               └── config
+│   │   │       │                   ├── CorsConfig.class
+│   │   │       │                   └── RestApiConfig.class
+│   │   │       └── test
+│   │   ├── generated
+│   │   │   └── sources
+│   │   │       ├── annotationProcessor
+│   │   │       │   └── java
+│   │   │       │       ├── main
+│   │   │       │       └── test
+│   │   │       └── headers
+│   │   │           └── java
+│   │   │               ├── main
+│   │   │               └── test
+│   │   ├── libs
+│   │   │   ├── 3D-Model_Market-1.0.0-plain.jar
+│   │   │   └── 3D-Model_Market-1.0.0.jar
+│   │   ├── reports
+│   │   │   └── problems
+│   │   │       └── problems-report.html
+│   │   └── tmp
+│   │       ├── bootJar
+│   │       │   └── MANIFEST.MF
+│   │       ├── compileJava
+│   │       │   └── previous-compilation-data.bin
+│   │       ├── compileTestJava
+│   │       │   └── previous-compilation-data.bin
+│   │       └── jar
+│   │           └── MANIFEST.MF
 │   ├── build.gradle
 │   ├── gradle
 │   │   └── wrapper
@@ -15,56 +52,106 @@
 │   ├── settings.gradle
 │   ├── src
 │   │   ├── main
-│   │   │   └── java
-│   │   │       └── com
-│   │   │           └── threed_model_market
-│   │   │               └── project
-│   │   │                   ├── Application.java
-│   │   │                   ├── config
-│   │   │                   │   ├── RestApiConfig.java
-│   │   │                   │   └── SecurityConfig.java
-│   │   │                   ├── contoller
-│   │   │                   │   ├── OrderController.java
-│   │   │                   │   ├── ProductController.java
-│   │   │                   │   └── UserController.java
-│   │   │                   ├── dto
-│   │   │                   │   ├── CategoryDto.java
-│   │   │                   │   ├── OrderDto.java
-│   │   │                   │   ├── PaymentDto.java
-│   │   │                   │   ├── ProductDto.java
-│   │   │                   │   └── UserDto.java
-│   │   │                   ├── exception
-│   │   │                   │   ├── GlobalExceptionHandler.java
-│   │   │                   │   ├── OrderNotFoundException.java
-│   │   │                   │   └── ProductNotFoundException.java
-│   │   │                   ├── model
-│   │   │                   │   ├── Category.java
-│   │   │                   │   ├── Order.java
-│   │   │                   │   ├── OrderItem.java
-│   │   │                   │   ├── Payment.java
-│   │   │                   │   ├── Product.java
-│   │   │                   │   └── User.java
-│   │   │                   ├── repository
-│   │   │                   │   ├── CategoryRepository.java
-│   │   │                   │   ├── OrderItemRepository.java
-│   │   │                   │   ├── OrderRepository.java
-│   │   │                   │   ├── PaymentRepository.java
-│   │   │                   │   ├── ProductRepository.java
-│   │   │                   │   └── UserRepository.java
-│   │   │                   ├── service
-│   │   │                   │   ├── CategoryService.java
-│   │   │                   │   ├── OrderItemService.java
-│   │   │                   │   ├── OrderService.java
-│   │   │                   │   ├── PaymentService.java
-│   │   │                   │   ├── ProductService.java
-│   │   │                   │   ├── UserService.java
-│   │   │                   │   └── impl
-│   │   │                   │       ├── CategoryServiceImpl.java
-│   │   │                   │       ├── OrderServiceImpl.java
-│   │   │                   │       └── ProductServiceImpl.java
-│   │   │                   └── util
-│   │   │                       ├── DateUtils.java
-│   │   │                       └── ValidationUtils.java
+│   │   │   ├── java
+│   │   │   │   └── com
+│   │   │   │       └── threed_model_market
+│   │   │   │           └── project
+│   │   │   │               ├── Application.java
+│   │   │   │               ├── Category.java
+│   │   │   │               ├── Discount.java
+│   │   │   │               ├── Image.java
+│   │   │   │               ├── Model.java
+│   │   │   │               ├── Order.java
+│   │   │   │               ├── Orderitem.java
+│   │   │   │               ├── Payment.java
+│   │   │   │               ├── Review.java
+│   │   │   │               ├── UserImage.java
+│   │   │   │               ├── config
+│   │   │   │               │   ├── CorsConfig.java
+│   │   │   │               │   ├── PasswordConfig.java
+│   │   │   │               │   └── RestApiConfig.java
+│   │   │   │               ├── contoller
+│   │   │   │               │   ├── OrderController.java
+│   │   │   │               │   ├── PermissionController.java
+│   │   │   │               │   ├── ProductController.java
+│   │   │   │               │   ├── RoleController.java
+│   │   │   │               │   └── UserController.java
+│   │   │   │               ├── dto
+│   │   │   │               │   ├── CategoryDto.java
+│   │   │   │               │   ├── OrderDto.java
+│   │   │   │               │   ├── PaymentDto.java
+│   │   │   │               │   ├── PermissionDto.java
+│   │   │   │               │   ├── ProductDto.java
+│   │   │   │               │   ├── RoleDto.java
+│   │   │   │               │   └── UserDto.java
+│   │   │   │               ├── exception_handler
+│   │   │   │               │   ├── GlobalExceptionHandler.java
+│   │   │   │               │   ├── OrderNotFoundException.java
+│   │   │   │               │   ├── PermissionExceptionHandler.java
+│   │   │   │               │   ├── ProductNotFoundException.java
+│   │   │   │               │   ├── RoleExceptionHandler.java
+│   │   │   │               │   ├── UserExceptionHandler.java
+│   │   │   │               │   └── exceptions
+│   │   │   │               │       ├── Patch
+│   │   │   │               │       │   └── PatchOperationNotSupportedException.java
+│   │   │   │               │       ├── Permission
+│   │   │   │               │       │   └── PermissionNotFoundException.java
+│   │   │   │               │       ├── Role
+│   │   │   │               │       │   └── RoleNotFoundException.java
+│   │   │   │               │       ├── Security
+│   │   │   │               │       │   └── UnauthorizedAccessException.java
+│   │   │   │               │       └── User
+│   │   │   │               │           ├── UserAlreadyExistsException.java
+│   │   │   │               │           ├── UserInvalidMailFormatException.java
+│   │   │   │               │           ├── UserInvalidPasswordException.java
+│   │   │   │               │           ├── UserNotFoundException.java
+│   │   │   │               │           └── UserNotFoundMailException.java
+│   │   │   │               ├── model
+│   │   │   │               │   ├── Category.java
+│   │   │   │               │   ├── Order.java
+│   │   │   │               │   ├── OrderItem.java
+│   │   │   │               │   ├── Payment.java
+│   │   │   │               │   ├── Permission.java
+│   │   │   │               │   ├── Product.java
+│   │   │   │               │   ├── Role.java
+│   │   │   │               │   └── User.java
+│   │   │   │               ├── repository
+│   │   │   │               │   ├── CategoryRepository.java
+│   │   │   │               │   ├── OrderItemRepository.java
+│   │   │   │               │   ├── OrderRepository.java
+│   │   │   │               │   ├── PaymentRepository.java
+│   │   │   │               │   ├── PermissionRepository.java
+│   │   │   │               │   ├── ProductRepository.java
+│   │   │   │               │   ├── RoleRepository.java
+│   │   │   │               │   └── UserRepository.java
+│   │   │   │               ├── security
+│   │   │   │               │   ├── Constants.java
+│   │   │   │               │   ├── CustomUserDetails.java
+│   │   │   │               │   ├── CustomUserDetailsService.java
+│   │   │   │               │   ├── JwtAuthenticationFilter.java
+│   │   │   │               │   ├── JwtTokenProvider.java
+│   │   │   │               │   └── SecurityConfig.java
+│   │   │   │               ├── service
+│   │   │   │               │   ├── AuthenticationService.java
+│   │   │   │               │   ├── CategoryService.java
+│   │   │   │               │   ├── OrderItemService.java
+│   │   │   │               │   ├── OrderService.java
+│   │   │   │               │   ├── PaymentService.java
+│   │   │   │               │   ├── PermissionService.java
+│   │   │   │               │   ├── ProductService.java
+│   │   │   │               │   ├── RoleService.java
+│   │   │   │               │   ├── UserService.java
+│   │   │   │               │   └── impl
+│   │   │   │               │       ├── AuthenticationServiceImpl.java
+│   │   │   │               │       ├── CategoryServiceImpl.java
+│   │   │   │               │       ├── OrderServiceImpl.java
+│   │   │   │               │       ├── PermissionServiceImpl.java
+│   │   │   │               │       ├── ProductServiceImpl.java
+│   │   │   │               │       ├── RoleServiceImpl.java
+│   │   │   │               │       └── UserServiceImpl.java
+│   │   │   │               └── util
+│   │   │   │                   └── ValidationUtils.java
+│   │   │   └── main.iml
 │   │   ├── resources
 │   │   │   └── application.yml
 │   │   └── test
@@ -82,7 +169,7 @@
 ├── database
 │   ├── Dockerfile
 │   ├── README.md
-│   ├── backups
+│   ├── migrations
 │   └── schema
 │       ├── 01_init.sql
 │       ├── 02_functions.sql
@@ -105,6 +192,7 @@
 │   │   └── prod_guide.md
 │   ├── developer_guide.md
 │   ├── development
+│   │   ├── backend_plan.md
 │   │   ├── development_plan.md
 │   │   └── structure.md
 │   ├── requirements
@@ -114,6 +202,7 @@
 │   │   └── test_plan.md
 │   └── user_guide.md
 ├── frontend
+│   ├── .gitignore
 │   ├── Dockerfile
 │   ├── index.html
 │   ├── node_modules
@@ -128,7 +217,21 @@
 │   ├── tests
 │   ├── vite.config.js
 │   └── yarn.lock
+├── lib
+│   ├── javax.annotation.jar
+│   ├── javax.ejb.jar
+│   ├── javax.jms.jar
+│   ├── javax.persistence.jar
+│   ├── javax.resource.jar
+│   ├── javax.servlet.jsp.jar
+│   ├── javax.servlet.jsp.jstl.jar
+│   └── javax.transaction.jar
 ├── logs
+├── out
+│   └── production
+│       └── 3D-Model_Market
+│           ├── application.yml
+│           └── main.iml
 ├── structure_tree.md
 ├── tree.py
 └── wait-for-it.sh

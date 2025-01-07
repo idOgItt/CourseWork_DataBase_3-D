@@ -6,7 +6,9 @@ plugins {
 
 group = 'com.3D-Model_Market.project'
 version = '1.0.0'
-sourceCompatibility = '21'
+
+sourceSets.main.resources.srcDir 'src/main/resources'
+
 
 repositories {
     mavenCentral()

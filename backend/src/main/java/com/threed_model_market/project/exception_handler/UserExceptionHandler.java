@@ -1,10 +1,7 @@
 package com.threed_model_market.project.exception_handler;
 
-import com.threed_model_market.project.exception_handler.exceptions.*;
-import com.threed_model_market.project.exception_handler.exceptions.User.UserAlreadyExists;
-import com.threed_model_market.project.exception_handler.exceptions.User.UserInvalidPasswordException;
-import com.threed_model_market.project.exception_handler.exceptions.User.UserNotFoundException;
-import com.threed_model_market.project.exception_handler.exceptions.User.UserNotFoundMailException;
+import com.threed_model_market.project.exception_handler.exceptions.Patch.PatchOperationNotSupportedException;
+import com.threed_model_market.project.exception_handler.exceptions.User.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,14 +20,14 @@ public class UserExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(UserAlreadyExists.class)
-    public ResponseEntity<String> handleAlreadyExistsException(UserNotFoundException ex) {
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<String> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
         logger.error("User already exists: {}", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UserInvalidPasswordException.class)
-    public ResponseEntity<String> handleInvalidPasswordException(UserNotFoundException ex) {
+    public ResponseEntity<String> handleInvalidPasswordException(UserInvalidPasswordException ex) {
         logger.error("Invalid password for user: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
@@ -45,5 +42,11 @@ public class UserExceptionHandler {
     public ResponseEntity<String> handleUserNotFoundMailException(UserNotFoundMailException ex) {
         logger.error("User not found by email: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserInvalidMailFormatException.class)
+    public ResponseEntity<String> handleUserInvalidMailFormatException(UserInvalidMailFormatException ex) {
+        logger.error("Invalid email format: {}", ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

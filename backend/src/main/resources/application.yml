@@ -4,6 +4,11 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
 
+  flyway:
+    enabled: true
+    locations: classpath:/flyway/sql
+    baseline-on-migrate: true
+
   jpa:
     hibernate:
       ddl-auto: none

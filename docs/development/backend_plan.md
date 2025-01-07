@@ -84,7 +84,7 @@
     Получение и представление данных (например, через v_user_statistics, v_orders_summary).
 
 3. Пошаговый процесс
-   Шаг 0: Role, Privilige.
+   Шаг 0 (DONE): Role, Privilige. 
    Шаг 1: Реализуем UserController, UserService и UserRepository для регистрации пользователей и аутентификации с JWT.
    Шаг 2: Реализуем ProductController, ProductService и CategoryRepository для работы с моделями и категориями.
    Шаг 3: Создаем OrderController, OrderService и OrderRepository для обработки заказов.
@@ -92,3 +92,21 @@
    Шаг 5: Реализуем DiscountController, DiscountService и DiscountRepository для обработки скидок.
    Шаг 6: Создаем LogController, LogService и LogRepository для обработки логов.
    Шаг 7: Реализуем AdminController и AdminService для получения статистики.
+
+4. Классы
+    Category.java
+    Discount.java
+    Role.java и Permission.java (если еще не созданы)
+    Image.java и UserImage.java
+    Model.java
+    Order.java и OrderItem.java
+    Payment.java
+    Review.java
+    User.java
+
+Причина:
+
+    Category и Discount не зависят от других классов.
+    Role и Permission должны быть созданы до User, так как User зависит от Role.
+    Image и UserImage можно создать до User, так как они связываются с моделью и пользователем, но User не зависит от них.
+    Model, Order, OrderItem, Payment, и Review зависят от User и других сущностей, поэтому они должны быть созданы после User.

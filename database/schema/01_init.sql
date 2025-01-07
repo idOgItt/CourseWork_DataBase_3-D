@@ -13,10 +13,12 @@ DROP TABLE IF EXISTS Permissions CASCADE;
 DROP TABLE IF EXISTS RolePermissions CASCADE;
 DROP TABLE IF EXISTS SuspiciousActionTypes CASCADE;
 DROP TABLE IF EXISTS SuspiciousLogs CASCADE;
+DROP TABLE IF EXISTS Images CASCADE;
+DROP TABLE IF EXISTS UserImages CASCADE;
 
 CREATE TABLE Roles (
                        RoleID SERIAL PRIMARY KEY,
-                       RoleName VARCHAR(20) NOT NULL UNIQUE
+                       RoleName VARCHAR(20) NOT NULL UNIQUE DEFAULT 'GUEST'
 );
 
 CREATE TABLE Permissions (
@@ -132,3 +134,20 @@ CREATE TABLE SuspiciousLogs (
                                 Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE Images (
+                        ImageID SERIAL PRIMARY KEY,
+                        ModelID INT REFERENCES Models(ModelID) ON DELETE CASCADE,
+                        FileName VARCHAR(255) NOT NULL,
+                        FileData BYTEA NOT NULL,
+                        UploadDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        CONSTRAINT unique_model_filename UNIQUE (ModelID, FileName)
+);
+
+CREATE TABLE UserImages (
+                            ImageID SERIAL PRIMARY KEY,
+                            UserID INT REFERENCES Users(UserID) ON DELETE CASCADE,
+                            FileName VARCHAR(255) NOT NULL,
+                            FileData BYTEA NOT NULL,
+                            UploadDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            CONSTRAINT unique_user_filename UNIQUE (UserID, FileName)
+);

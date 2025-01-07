@@ -1,22 +1,27 @@
 package com.threed_model_market.project.model;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.threed_model_market.project.enums.RoleEnum;
 
-
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("SpellCheckingInspection")
+@Getter
+@Setter
 @Entity
+@Table(name = "roles")
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "roleid")
     private Long id;
 
-    @Enumerated(value = EnumType.STRING)
-    private RoleEnum type;
+    @Column(name = "rolename")
+    private String rolename;
 
     @ManyToMany(mappedBy = "roles")
     @JsonIgnoreProperties("roles")
@@ -24,87 +29,27 @@ public class Role {
 
     @ManyToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-            name = "roles_privileges",
-            joinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "privilege_id", referencedColumnName = "id"
-            )
+            name = "rolepermissions",
+            joinColumns = @JoinColumn(name = "roleid", referencedColumnName = "roleid"),
+            inverseJoinColumns = @JoinColumn(name = "permissionid", referencedColumnName = "permissionid")
     )
-    @JsonIgnoreProperties({"roles", "id"}) // This ignore the fields in the Privilege entity.
-    private List<Privilege> privileges = new ArrayList<>();
+    @JsonIgnoreProperties({"roles", "id"})
+    private List<Permission> permissions = new ArrayList<>();
 
-    public Role() {
+    protected Role() {
     }
 
-    public Role(RoleEnum type) {
-        this.type = type;
+    public Role(String rolename) {
+        this.rolename = rolename;
     }
 
-    public Role(RoleEnum type, List<User> users, List<Privilege> privileges) {
-        this.type = type;
-        this.users = users;
-        this.privileges = privileges;
+    public void addPermission(Permission permission) {
+        this.permissions.add(permission);
+        permission.getRoles().add(this);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public RoleEnum getType() {
-        return type;
-    }
-
-    public void setType(RoleEnum type) {
-        this.type = type;
-    }
-
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
-
-    public List<Privilege> getPrivileges() {
-        return privileges;
-    }
-
-    public void setPrivileges(List<Privilege> privileges) {
-        for (Privilege privilege : privileges) {
-            setPrivilege(privilege);
-        }
-    }
-
-    public void removePrivileges(List<Privilege> privileges) {
-        for (Privilege privilege : privileges) {
-            removePrivilege(privilege);
-        }
-    }
-
-    /**
-     * Add role and also to child entity privilege.
-     *
-     * @param privilege
-     */
-    public void setPrivilege(Privilege privilege) {
-        this.privileges.add(privilege);
-        privilege.getRoles().add(this);
-    }
-
-    /**
-     * Remove role and also to child entity privilege.
-     *
-     * @param privilege
-     */
-    public void removePrivilege(Privilege privilege) {
-        this.privileges.remove(privilege);
-        privilege.getRoles().remove(this);
+    public void removePermission(Permission permission) {
+        this.permissions.remove(permission);
+        permission.getRoles().remove(this);
     }
 }
