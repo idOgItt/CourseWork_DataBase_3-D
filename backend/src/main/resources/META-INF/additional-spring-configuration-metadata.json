@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "spring.app.jwtSecret",
+      "type": "java.lang.String",
+      "description": "Description for spring.app.jwtSecret."
+    },
+    {
+      "name": "spring.app.jwtExpirationInMs",
+      "type": "java.lang.Long",
+      "description": "The expiration time of the JWT in milliseconds."
+    }
+  ]
+}

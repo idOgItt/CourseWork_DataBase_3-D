@@ -1,4 +1,4 @@
-package com.threed_model_market.project.exception_handler.exceptions;
+package com.threed_model_market.project.exception_handler.exceptions.Patch;
 
 public class PatchOperationNotSupportedException extends RuntimeException {
     public PatchOperationNotSupportedException(String message) {
