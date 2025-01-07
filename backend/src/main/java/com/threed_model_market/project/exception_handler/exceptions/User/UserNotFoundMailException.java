@@ -5,6 +5,7 @@ public class UserNotFoundMailException extends RuntimeException {
         super(message);
     }
 
+    @SuppressWarnings("unused")
     public UserNotFoundMailException(String message, Throwable cause) {
         super(message, cause);
     }

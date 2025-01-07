@@ -5,6 +5,7 @@ public class UserAlreadyExistsException extends Throwable {
         super(message);
     }
 
+    @SuppressWarnings("unused")
     public UserAlreadyExistsException(String message, Throwable cause) {
         super(message, cause);
     }

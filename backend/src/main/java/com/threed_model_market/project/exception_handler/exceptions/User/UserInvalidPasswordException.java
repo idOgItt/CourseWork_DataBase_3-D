@@ -5,6 +5,7 @@ public class UserInvalidPasswordException extends RuntimeException {
         super(message);
     }
 
+    @SuppressWarnings("unused")
     public UserInvalidPasswordException(String message, Throwable cause) {
         super(message, cause);
     }

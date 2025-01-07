@@ -5,6 +5,7 @@ public class UserInvalidMailFormatException extends RuntimeException {
         super(message);
     }
 
+    @SuppressWarnings("unused")
     public UserInvalidMailFormatException(String message, Throwable cause) {
         super(message, cause);
     }

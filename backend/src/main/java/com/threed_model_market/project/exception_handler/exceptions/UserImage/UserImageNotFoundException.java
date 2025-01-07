@@ -5,4 +5,8 @@ public class UserImageNotFoundException extends RuntimeException {
         super(message);
     }
 
+    @SuppressWarnings("unused")
+    public UserImageNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

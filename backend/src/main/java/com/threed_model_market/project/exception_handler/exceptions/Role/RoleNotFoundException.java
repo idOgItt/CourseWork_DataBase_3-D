@@ -5,6 +5,7 @@ public class RoleNotFoundException extends RuntimeException {
         super(message);
     }
 
+    @SuppressWarnings("unused")
     public RoleNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }

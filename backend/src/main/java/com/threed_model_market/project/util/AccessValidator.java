@@ -2,7 +2,9 @@ package com.threed_model_market.project.util;
 
 import com.threed_model_market.project.exception_handler.exceptions.Security.UnauthorizedAccessException;
 import com.threed_model_market.project.security.JwtTokenProvider;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AccessValidator {
 
     private final JwtTokenProvider jwtTokenProvider;

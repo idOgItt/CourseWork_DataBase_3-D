@@ -5,6 +5,7 @@ public class PermissionNotFoundException extends RuntimeException {
         super(message);
     }
 
+    @SuppressWarnings("unused")
     public PermissionNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }

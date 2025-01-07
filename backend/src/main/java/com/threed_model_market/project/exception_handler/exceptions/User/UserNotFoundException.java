@@ -5,6 +5,7 @@ public class UserNotFoundException extends RuntimeException {
         super(message);
     }
 
+    @SuppressWarnings("unused")
     public UserNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
