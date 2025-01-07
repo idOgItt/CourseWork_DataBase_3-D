@@ -19,6 +19,13 @@ class discounts {
    integer timesused
    integer discountid
 }
+class images {
+   integer modelid
+   varchar(255) filename
+   bytea filedata
+   timestamp uploaddate
+   integer imageid
+}
 class logs {
    integer userid
    integer actiontypeid
@@ -92,6 +99,13 @@ class suspiciouslogs {
    timestamp timestamp
    integer logid
 }
+class userimages {
+   integer userid
+   varchar(255) filename
+   bytea filedata
+   timestamp uploaddate
+   integer imageid
+}
 class users {
    varchar(50) username
    varchar(100) email
@@ -101,6 +115,7 @@ class users {
    integer userid
 }
 
+images  -->  models : modelid
 logs  -->  actiontypes : actiontypeid
 logs  -->  users : userid
 models  -->  categories : categoryid
@@ -116,4 +131,5 @@ rolepermissions  -->  permissions : permissionid
 rolepermissions  -->  roles : roleid
 suspiciouslogs  -->  suspiciousactiontypes : actiontypeid
 suspiciouslogs  -->  users : userid
+userimages  -->  users : userid
 users  -->  roles : roleid

@@ -1,32 +1,31 @@
-package com.threed_model_market.project;
+package com.threed_model_market.project.model;
 
-import com.threed_model_market.project.model.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "userimages", schema = "public")
+@Table(
+        name = "userimages",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"userid", "filename"})
+)
 public class UserImage {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userimages_id_gen")
     @SequenceGenerator(name = "userimages_id_gen", sequenceName = "userimages_imageid_seq", allocationSize = 1)
     @Column(name = "imageid", nullable = false)
-    private Integer id;
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "userid")
-    private User userid;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userid", nullable = false, unique = true)
+    private User user;
 
     @Size(max = 255)
     @NotNull
@@ -37,8 +36,6 @@ public class UserImage {
     @Column(name = "filedata", nullable = false)
     private byte[] filedata;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "uploaddate")
-    private Instant uploaddate;
-
+    @Column(name = "uploaddate", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Instant uploadDate;
 }

@@ -1,7 +1,5 @@
 package com.threed_model_market.project.model;
 
-import com.threed_model_market.project.UserImage;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,10 +30,10 @@ public class User {
     @JoinColumn(name = "roleid", nullable = false)
     private Role role;
 
-    @Column(name = "registrationdate", nullable = false)
+    @Column(name = "registrationdate", nullable = false, updatable = false)
     private Instant registrationdate;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,  fetch = FetchType.LAZY)
     private UserImage userImage;
 
     protected User() {

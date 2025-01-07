@@ -2,15 +2,14 @@ package com.threed_model_market.project.contoller;
 
 import com.threed_model_market.project.dto.RoleDto;
 import com.threed_model_market.project.dto.UserDto;
-import com.threed_model_market.project.exception_handler.exceptions.Security.UnauthorizedAccessException;
 import com.threed_model_market.project.exception_handler.exceptions.User.UserAlreadyExistsException;
 import com.threed_model_market.project.exception_handler.exceptions.User.UserInvalidMailFormatException;
 import com.threed_model_market.project.exception_handler.exceptions.User.UserInvalidPasswordException;
 import com.threed_model_market.project.exception_handler.exceptions.User.UserNotFoundMailException;
 import com.threed_model_market.project.model.Role;
 import com.threed_model_market.project.model.User;
-import com.threed_model_market.project.security.JwtTokenProvider;
 import com.threed_model_market.project.service.UserService;
+import com.threed_model_market.project.util.AccessValidator;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,19 +23,12 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AccessValidator accessValidator;
 
-    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider) {
+    public UserController(UserService userService, AccessValidator accessValidator) {
         this.userService = userService;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.accessValidator = accessValidator;
     }
-
-    private boolean hasAdminAuthority(String token) {
-        return jwtTokenProvider.getAuthoritiesFromJWT(token).stream()
-                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
-
-    }
-
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserDto UserDto) throws UserAlreadyExistsException, UserInvalidMailFormatException {
@@ -51,25 +43,15 @@ public class UserController {
     @PreAuthorize("hasAuthority('VIEW_USERS') or hasAuthority('ROLE_ADMIN')")
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getUserByEmail(@PathVariable String email, @RequestHeader("Authorization") String token) throws UserNotFoundMailException, UserInvalidMailFormatException {
-        Long userIdFromToken = jwtTokenProvider.getUserIdFromJWT(token);
-
         User user = userService.getUserByEmail(email);
-        if (userIdFromToken.equals(user.getId()) || hasAdminAuthority(token)) {
-            return ResponseEntity.ok(user);
-        } else {
-            throw new UnauthorizedAccessException("You can only view your own account.");
-        }
+        accessValidator.validateUserAccess(token, user.getId());
+        return ResponseEntity.ok(user);
     }
 
     @PreAuthorize("hasAuthority('VIEW_USERS') or hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
-        Long userIdFromToken = jwtTokenProvider.getUserIdFromJWT(token);
-
-        if (!userIdFromToken.equals(id) && !hasAdminAuthority(token)) {
-            throw new UnauthorizedAccessException("You can only view your own account.");
-        }
-
+        accessValidator.validateUserAccess(token, id);
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
@@ -110,12 +92,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('VIEW_USERS') or hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}/password")
     public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody String newPassword, @RequestHeader("Authorization") String token) {
-        Long userIdFromToken = jwtTokenProvider.getUserIdFromJWT(token);
-
-        if (!userIdFromToken.equals(id)) {
-            throw new UnauthorizedAccessException("You can only update your own account.");
-        }
-
+        accessValidator.validateUserAccess(token, id);
         userService.changeUserPassword(id, newPassword);
         return ResponseEntity.ok("Password changed successfully");
     }
@@ -136,12 +113,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('VIEW_USERS') or hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}/email")
     public ResponseEntity<?> changeUserEmail(@PathVariable Long id, @RequestBody String newEmail, @RequestHeader("Authorization") String token) throws UserNotFoundMailException, UserInvalidMailFormatException, UserAlreadyExistsException {
-        Long userIdFromToken = jwtTokenProvider.getUserIdFromJWT(token);
-
-        if (!userIdFromToken.equals(id)) {
-            throw new UnauthorizedAccessException("You can only update your own account.");
-        }
-
+        accessValidator.validateUserAccess(token, id);
         userService.changeUserEmail(id, newEmail);
         return ResponseEntity.ok("Email changed successfully");
     }
