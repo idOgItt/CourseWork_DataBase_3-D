@@ -1,6 +1,5 @@
 package com.threed_model_market.project.model;
 
-import com.threed_model_market.project.Order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

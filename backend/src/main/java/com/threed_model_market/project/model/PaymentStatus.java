@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "paymentstatuses", schema = "public")
+@Table(name = "paymentstatuses")
 public class PaymentStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "paymentstatuses_id_gen")
