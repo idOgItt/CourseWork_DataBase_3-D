@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW v_orders_summary AS
 SELECT
+    ROW_NUMBER() OVER () AS "ID",
     o.OrderID,
     u.Username AS "User",
     s.Name AS "Status",
@@ -20,6 +21,7 @@ FROM Orders o
 
 CREATE OR REPLACE VIEW v_models_popularity AS
 SELECT
+    ROW_NUMBER() OVER () AS "ID",
     m.ModelID,
     m.Name AS "ModelName",
     c.Name AS "Category",
@@ -33,6 +35,7 @@ GROUP BY m.ModelID, m.Name, c.Name;
 
 CREATE OR REPLACE VIEW v_reviews_summary AS
 SELECT
+    ROW_NUMBER() OVER () AS "ID",
     r.ReviewID,
     u.Username AS "Reviewer",
     m.Name AS "ModelName",
@@ -46,6 +49,7 @@ FROM Reviews r
 
 CREATE OR REPLACE VIEW v_discounts_analysis AS
 SELECT
+    ROW_NUMBER() OVER () AS "ID",
     d.Code AS "DiscountCode",
     d.DiscountAmount,
     dt.Name AS "DiscountType",
@@ -63,6 +67,7 @@ GROUP BY
 
 CREATE OR REPLACE VIEW v_order_details AS
 SELECT
+    ROW_NUMBER() OVER () AS "ID",
     o.OrderID,
     u.Username AS "User",
     o.OrderDate,
@@ -79,6 +84,7 @@ FROM Orders o
 
 CREATE OR REPLACE VIEW v_user_statistics AS
 SELECT
+    ROW_NUMBER() OVER () AS "ID",
     u.UserID,
     u.Username,
     u.Email,
