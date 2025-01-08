@@ -10,7 +10,9 @@ public interface DiscountService {
 
     List<Discount> getAllDiscounts();
 
-    Discount getDiscountById(Integer id);
+    Discount getDiscountById(Long id);
 
-    void removeDiscount(Integer id);
+    void removeDiscount(Long id);
+
+    Discount getDiscountByCode(String code);
 }

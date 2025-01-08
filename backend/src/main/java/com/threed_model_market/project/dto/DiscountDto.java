@@ -11,7 +11,7 @@ import java.time.OffsetDateTime;
 public class DiscountDto {
     private String code;
     private BigDecimal discountAmount;
-    private String discountType;
+    private String discountTypeName;
     private OffsetDateTime startDate;
     private OffsetDateTime endDate;
     private Integer usageLimit;

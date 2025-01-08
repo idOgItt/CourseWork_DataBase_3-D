@@ -41,13 +41,19 @@ public class DiscountController {
 
     @PreAuthorize("hasAuthority('VIEW_DISCOUNTS') or hasAuthority('ROLE_ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<Discount> getDiscountById(@PathVariable Integer id) {
+    public ResponseEntity<Discount> getDiscountById(@PathVariable Long id) {
         return ResponseEntity.ok(discountService.getDiscountById(id));
+    }
+
+    @PreAuthorize("hasAuthority('VIEW_DISCOUNTS') or hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/code/{code}")
+    public ResponseEntity<Discount> getDiscountByCode(@PathVariable String code) {
+        return ResponseEntity.ok(discountService.getDiscountByCode(code));
     }
 
     @PreAuthorize("hasAuthority('MANAGE_DISCOUNTS') or hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeDiscount(@PathVariable Integer id, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> removeDiscount(@PathVariable Long id, @RequestHeader("Authorization") String token) {
         Long userIdFromToken = jwtTokenProvider.getUserIdFromJWT(token);
         accessValidator.validateUserAccess(token, userIdFromToken);
         discountService.removeDiscount(id);

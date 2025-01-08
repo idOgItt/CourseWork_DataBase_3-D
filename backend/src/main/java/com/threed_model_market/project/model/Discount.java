@@ -13,13 +13,13 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "discounts", schema = "public")
+@Table(name = "discounts")
 public class Discount {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "discounts_id_gen")
     @SequenceGenerator(name = "discounts_id_gen", sequenceName = "discounts_discountid_seq", allocationSize = 1)
     @Column(name = "discountid", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 50)
     @NotNull
@@ -30,10 +30,9 @@ public class Discount {
     @Column(name = "discountamount", nullable = false)
     private BigDecimal discountAmount;
 
-    @Size(max = 20)
-    @NotNull
-    @Column(name = "discounttype", nullable = false, length = 20)
-    private String discountType;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "discounttype", nullable = false)
+    private DiscountType discountType;
 
     @NotNull
     @Column(name = "startdate", nullable = false)
@@ -49,8 +48,4 @@ public class Discount {
     @ColumnDefault("0")
     @Column(name = "timesused", nullable = false)
     private Integer timesUsed = 0;
-
-    public enum DiscountType {
-        FIXED, PERCENT
-    }
 }
