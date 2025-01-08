@@ -1,5 +1,6 @@
 package com.threed_model_market.project.exception_handler;
 
+import com.threed_model_market.project.exception_handler.exceptions.Log.LogNotFoundException;
 import com.threed_model_market.project.exception_handler.exceptions.Security.UnauthorizedAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleUnauthorizedAccessException(UnauthorizedAccessException ex) {
         logger.error("Unauthorized access: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(LogNotFoundException.class)
+    public ResponseEntity<String> handleLogNotFoundException(LogNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
