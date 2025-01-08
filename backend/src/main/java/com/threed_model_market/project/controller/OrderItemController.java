@@ -30,14 +30,14 @@ public class OrderItemController {
     public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItemDto orderItemDto, @RequestHeader("Authorization") String token) {
         Long userIdFromToken = jwtTokenProvider.getUserIdFromJWT(token);
         accessValidator.validateUserAccess(token, userIdFromToken);
-
-        OrderItem orderItem = orderItemService.createOrderItem(orderItemDto);
-        return ResponseEntity.ok(orderItem);
+        return ResponseEntity.ok(orderItemService.createOrderItem(orderItemDto));
     }
 
     @PreAuthorize("hasAuthority('VIEW_ORDER_ITEMS') or hasAuthority('ROLE_ADMIN')")
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<List<OrderItem>> getOrderItemsByOrderId(@PathVariable Long orderId) {
+    public ResponseEntity<List<OrderItem>> getOrderItemsByOrderId(@PathVariable Long orderId, @RequestHeader("Authorization") String token) {
+        Long userIdFromToken = jwtTokenProvider.getUserIdFromJWT(token);
+        accessValidator.validateUserAccess(token, userIdFromToken);
         return ResponseEntity.ok(orderItemService.getOrderItemsByOrderId(orderId));
     }
 
