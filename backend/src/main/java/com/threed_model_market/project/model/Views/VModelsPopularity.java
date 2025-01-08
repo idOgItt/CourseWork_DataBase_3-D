@@ -16,7 +16,7 @@ import org.hibernate.annotations.Immutable;
 @Setter
 @Entity
 @Immutable
-@Table(name = "v_models_popularity", schema = "public")
+@Table(name = "v_models_popularity")
 public class VModelsPopularity {
     @Id
     @Column(name = "\"ID\"")
