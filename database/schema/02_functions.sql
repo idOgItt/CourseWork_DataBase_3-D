@@ -1,21 +1,19 @@
 CREATE OR REPLACE FUNCTION calculate_discount(order_id INT, discount_code VARCHAR) RETURNS MONEY AS $$
 DECLARE
-    total NUMERIC := 0; -- Используем NUMERIC для вычислений
-    discount NUMERIC := 0; -- Используем NUMERIC для значения скидки
-    discounted_total NUMERIC; -- Промежуточный результат также NUMERIC
-    discount_type VARCHAR(20) := 'NONE'; -- Тип скидки по умолчанию
+    total NUMERIC := 0;
+    discount NUMERIC := 0;
+    discounted_total NUMERIC;
+    discount_type VARCHAR(20) := 'NONE';
 BEGIN
     IF order_id IS NULL THEN
         RETURN 0::MONEY;
     END IF;
-    -- Получить общую сумму заказа, используя связь OrderItems и Models
     SELECT COALESCE(SUM(m.Price::NUMERIC * oi.Quantity), 0)
     INTO total
     FROM OrderItems oi
              JOIN Models m ON oi.ModelID = m.ModelID
     WHERE oi.OrderID = order_id;
 
-    -- Проверить наличие discount_code
     IF discount_code IS NOT NULL THEN
         SELECT COALESCE(DiscountAmount::NUMERIC, 0), COALESCE(DiscountType, 'FIXED')
         INTO discount, discount_type
@@ -25,66 +23,44 @@ BEGIN
           AND EndDate > CURRENT_TIMESTAMP;
     END IF;
 
-    -- Рассчитать сумму с учётом скидки
     IF discount_type = 'FIXED' THEN
         discounted_total := total - discount;
     ELSIF discount_type = 'PERCENT' THEN
         discounted_total := total - (total * discount / 100.0);
     ELSE
-        discounted_total := total; -- Если скидки нет или тип неизвестен, оставить исходную сумму
+        discounted_total := total;
     END IF;
 
-    -- Убедиться, что итоговая сумма не отрицательная
     IF discounted_total < 0 THEN
         discounted_total := 0;
     END IF;
 
     RAISE NOTICE 'Total: %, Discount: %, DiscountType: %, Result: %', total, discount, discount_type, discounted_total;
 
-    RETURN discounted_total::MONEY; -- Преобразуем результат обратно в MONEY
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION check_permission(user_id INT, permission_name VARCHAR) RETURNS BOOLEAN AS $$
-BEGIN
-    RETURN EXISTS (
-        SELECT 1
-        FROM RolePermissions rp
-                 JOIN Users u ON rp.RoleID = u.RoleID
-                 JOIN Permissions p ON rp.PermissionID = p.PermissionID
-        WHERE u.UserID = user_id AND p.PermissionName = permission_name
-    );
+    RETURN discounted_total::MONEY;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION log_suspicious_action(
     user_id INT,
-    action_type_name VARCHAR,
-    description TEXT
+    action_type_name VARCHAR
 ) RETURNS VOID AS $$
 DECLARE
     action_type_id INT;
 BEGIN
-    -- Найти ActionTypeID по имени
     SELECT ActionTypeID
     INTO action_type_id
     FROM SuspiciousActionTypes
     WHERE ActionName = action_type_name;
 
-    -- Если ActionTypeID не найден, выбросить понятное исключение
     IF action_type_id IS NULL THEN
         RAISE EXCEPTION 'ActionTypeID not found for action type name: %', action_type_name;
     END IF;
 
-    -- Вставить запись в SuspiciousLogs
     INSERT INTO SuspiciousLogs (UserID, ActionTypeID, Description)
     VALUES (user_id, action_type_id, description);
 END;
 $$ LANGUAGE plpgsql;
-
-
-
-
 
 CREATE OR REPLACE FUNCTION calculate_model_rating(model_id INT) RETURNS NUMERIC AS $$
 DECLARE
@@ -125,28 +101,24 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION log_user_action() RETURNS TRIGGER AS $$
 DECLARE
     action_type_id INT;
-    user_id INT := NULL; -- Значение по умолчанию для UserID
+    user_id INT := NULL;
 BEGIN
     RAISE NOTICE 'Trigger activated on table: % with operation: %', TG_TABLE_NAME, TG_OP;
 
-    -- Предотвращение рекурсии для таблицы Logs
     IF TG_TABLE_NAME = 'Logs' THEN
         RAISE NOTICE 'Skipping trigger execution for Logs.';
         RETURN NEW;
     END IF;
 
-    -- Генерация ActionTypeID
     SELECT ActionTypeID
     INTO action_type_id
     FROM ActionTypes
     WHERE ActionName = UPPER(TG_TABLE_NAME) || '_' || TG_OP;
 
-    -- Если ActionTypeID отсутствует, выбросить исключение
     IF action_type_id IS NULL THEN
         RAISE EXCEPTION 'ActionTypeID not found for table % and operation %', TG_TABLE_NAME, TG_OP;
     END IF;
 
-    -- Проверить наличие поля UserID в NEW записи
     IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
         BEGIN
             user_id := NEW.UserID;
@@ -156,7 +128,6 @@ BEGIN
         END;
     END IF;
 
-    -- Логировать действие
     INSERT INTO Logs (UserID, ActionTypeID, Description, Timestamp)
     VALUES (user_id, action_type_id, 'Action performed on table ' || TG_TABLE_NAME, CURRENT_TIMESTAMP);
 
@@ -172,18 +143,15 @@ CREATE OR REPLACE FUNCTION log_exception(
 DECLARE
     action_type_id INT;
 BEGIN
-    -- Найти ActionTypeID по имени
     SELECT ActionTypeID
     INTO action_type_id
     FROM ActionTypes
     WHERE ActionName = action_type_name;
 
-    -- Если ActionTypeID не найден, выбросить исключение
     IF action_type_id IS NULL THEN
         RAISE EXCEPTION 'ActionTypeID not found for action type name: %', action_type_name;
     END IF;
 
-    -- Вставить запись в Logs
     INSERT INTO Logs (UserID, ActionTypeID, Description, Timestamp)
     VALUES (user_id, action_type_id, exception_message, CURRENT_TIMESTAMP);
 END;
@@ -276,7 +244,6 @@ BEGIN
         END IF;
     END IF;
 
-    -- Расчёт скидки
     NEW.TotalAmount := calculate_discount(NEW.OrderID, NEW.DiscountCode);
     RETURN NEW;
 END;
@@ -293,4 +260,5 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
 

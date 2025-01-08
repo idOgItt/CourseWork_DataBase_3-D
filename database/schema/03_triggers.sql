@@ -33,7 +33,6 @@ CREATE OR REPLACE TRIGGER calculate_discount_trigger
     FOR EACH ROW
 EXECUTE FUNCTION calculate_discount_trigger();
 
-
 CREATE OR REPLACE  TRIGGER after_review_insert
     AFTER INSERT ON Reviews
     FOR EACH ROW
