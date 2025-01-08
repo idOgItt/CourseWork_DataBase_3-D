@@ -104,4 +104,14 @@ FROM Users u
 GROUP BY
     u.UserID, u.Username, u.Email;
 
-
+CREATE OR REPLACE VIEW v_logs_summary AS
+SELECT
+    ROW_NUMBER() OVER (ORDER BY l.Timestamp DESC) AS "ID",
+    l.LogID,
+    u.Username AS "Username",
+    a.ActionName AS "Action",
+    l.Description,
+    l.Timestamp
+FROM Logs l
+LEFT JOIN Users u ON l.UserID = u.UserID
+LEFT JOIN ActionTypes a ON l.ActionTypeID = a.ActionTypeID;
