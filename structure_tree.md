@@ -43,6 +43,7 @@
 │   │       └── jar
 │   │           └── MANIFEST.MF
 │   ├── build.gradle
+│   ├── docker-entrypoint.sh
 │   ├── gradle
 │   │   └── wrapper
 │   │       ├── gradle-wrapper.jar
@@ -57,56 +58,106 @@
 │   │   │   │       └── threed_model_market
 │   │   │   │           └── project
 │   │   │   │               ├── Application.java
-│   │   │   │               ├── Category.java
-│   │   │   │               ├── Discount.java
-│   │   │   │               ├── Image.java
-│   │   │   │               ├── Model.java
-│   │   │   │               ├── Order.java
-│   │   │   │               ├── Orderitem.java
-│   │   │   │               ├── Payment.java
-│   │   │   │               ├── Review.java
 │   │   │   │               ├── config
 │   │   │   │               │   ├── CorsConfig.java
 │   │   │   │               │   ├── PasswordConfig.java
 │   │   │   │               │   └── RestApiConfig.java
 │   │   │   │               ├── controller
 │   │   │   │               │   ├── CategoryController.java
+│   │   │   │               │   ├── DiscountController.java
+│   │   │   │               │   ├── DiscountTypeController.java
 │   │   │   │               │   ├── ImageController.java
+│   │   │   │               │   ├── ModelController.java
+│   │   │   │               │   ├── ModelStatusController.java
 │   │   │   │               │   ├── OrderController.java
+│   │   │   │               │   ├── OrderItemController.java
+│   │   │   │               │   ├── OrderStatusController.java
+│   │   │   │               │   ├── PaymentController.java
+│   │   │   │               │   ├── PaymentMethodController.java
+│   │   │   │               │   ├── PaymentStatusController.java
 │   │   │   │               │   ├── PermissionController.java
-│   │   │   │               │   ├── ProductController.java
+│   │   │   │               │   ├── ReviewController.java
 │   │   │   │               │   ├── RoleController.java
 │   │   │   │               │   ├── UserController.java
-│   │   │   │               │   └── UserImageController.java
+│   │   │   │               │   ├── UserImageController.java
+│   │   │   │               │   └── Views
+│   │   │   │               │       ├── VDiscountsAnalysisController.java
+│   │   │   │               │       ├── VLogsSummaryController.java
+│   │   │   │               │       ├── VModelsPopularityController.java
+│   │   │   │               │       ├── VOrderDetailController.java
+│   │   │   │               │       ├── VOrdersSummaryController.java
+│   │   │   │               │       ├── VReviewsSummaryController.java
+│   │   │   │               │       └── VUserStatisticController.java
 │   │   │   │               ├── dto
 │   │   │   │               │   ├── CategoryDto.java
+│   │   │   │               │   ├── DiscountDto.java
+│   │   │   │               │   ├── DiscountTypeDto.java
 │   │   │   │               │   ├── ImageDto.java
+│   │   │   │               │   ├── ModelDto.java
+│   │   │   │               │   ├── ModelStatusDto.java
 │   │   │   │               │   ├── OrderDto.java
+│   │   │   │               │   ├── OrderItemDto.java
+│   │   │   │               │   ├── OrderStatusDto.java
 │   │   │   │               │   ├── PaymentDto.java
+│   │   │   │               │   ├── PaymentMethodDto.java
+│   │   │   │               │   ├── PaymentStatusDto.java
 │   │   │   │               │   ├── PermissionDto.java
-│   │   │   │               │   ├── ProductDto.java
+│   │   │   │               │   ├── ReviewDto.java
 │   │   │   │               │   ├── RoleDto.java
 │   │   │   │               │   ├── UserDto.java
-│   │   │   │               │   └── UserImageDto.java
+│   │   │   │               │   ├── UserImageDto.java
+│   │   │   │               │   └── Views
+│   │   │   │               │       ├── VDiscountsAnalysisDto.java
+│   │   │   │               │       ├── VLogsSummaryDto.java
+│   │   │   │               │       ├── VModelsPopularityDto.java
+│   │   │   │               │       ├── VOrderDetailDto.java
+│   │   │   │               │       ├── VOrdersSummaryDto.java
+│   │   │   │               │       ├── VReviewsSummaryDto.java
+│   │   │   │               │       └── VUserStatisticDto.java
 │   │   │   │               ├── exception_handler
 │   │   │   │               │   ├── CategoryExceptionHandler.java
+│   │   │   │               │   ├── DiscountExceptionHandler.java
 │   │   │   │               │   ├── GlobalExceptionHandler.java
 │   │   │   │               │   ├── ImageExceptionHandler.java
-│   │   │   │               │   ├── OrderNotFoundException.java
+│   │   │   │               │   ├── ModelExceptionHandler.java
+│   │   │   │               │   ├── OrderExceptionHandler.java
+│   │   │   │               │   ├── PaymentExceptionHandler.java
 │   │   │   │               │   ├── PermissionExceptionHandler.java
-│   │   │   │               │   ├── ProductNotFoundException.java
+│   │   │   │               │   ├── ReviewExceptionHandler.java
 │   │   │   │               │   ├── RoleExceptionHandler.java
 │   │   │   │               │   ├── UserExceptionHandler.java
 │   │   │   │               │   ├── UserImageExceptionHandler.java
 │   │   │   │               │   └── exceptions
 │   │   │   │               │       ├── Category
 │   │   │   │               │       │   └── CategoryNotFoundException.java
+│   │   │   │               │       ├── Discount
+│   │   │   │               │       │   └── DiscountNotFoundException.java
+│   │   │   │               │       ├── DiscountType
+│   │   │   │               │       │   └── DiscountTypeNotFoundException.java
 │   │   │   │               │       ├── Image
 │   │   │   │               │       │   └── ImageNotFoundException.java
+│   │   │   │               │       ├── Log
+│   │   │   │               │       │   └── LogNotFoundException.java
+│   │   │   │               │       ├── Model
+│   │   │   │               │       │   └── ModelNotFoundException.java
+│   │   │   │               │       ├── ModelStatus
+│   │   │   │               │       │   └── ModelStatusNotFoundException.java
+│   │   │   │               │       ├── Order
+│   │   │   │               │       │   └── OrderNotFoundException.java
+│   │   │   │               │       ├── OrderStatus
+│   │   │   │               │       │   └── OrderStatusNotFoundException.java
 │   │   │   │               │       ├── Patch
 │   │   │   │               │       │   └── PatchOperationNotSupportedException.java
+│   │   │   │               │       ├── Payment
+│   │   │   │               │       │   └── PaymentNotFoundException.java
+│   │   │   │               │       ├── PaymentMethod
+│   │   │   │               │       │   └── PaymentMethodNotFoundException.java
+│   │   │   │               │       ├── PaymentStatus
+│   │   │   │               │       │   └── PaymentStatusNotFoundException.java
 │   │   │   │               │       ├── Permission
 │   │   │   │               │       │   └── PermissionNotFoundException.java
+│   │   │   │               │       ├── Review
+│   │   │   │               │       │   └── ReviewNotFoundException.java
 │   │   │   │               │       ├── Role
 │   │   │   │               │       │   └── RoleNotFoundException.java
 │   │   │   │               │       ├── Security
@@ -121,27 +172,56 @@
 │   │   │   │               │           └── UserImageNotFoundException.java
 │   │   │   │               ├── model
 │   │   │   │               │   ├── Category.java
+│   │   │   │               │   ├── Discount.java
+│   │   │   │               │   ├── DiscountType.java
 │   │   │   │               │   ├── Image.java
+│   │   │   │               │   ├── Model.java
+│   │   │   │               │   ├── ModelStatus.java
 │   │   │   │               │   ├── Order.java
 │   │   │   │               │   ├── OrderItem.java
+│   │   │   │               │   ├── OrderStatus.java
 │   │   │   │               │   ├── Payment.java
+│   │   │   │               │   ├── PaymentMethod.java
+│   │   │   │               │   ├── PaymentStatus.java
 │   │   │   │               │   ├── Permission.java
-│   │   │   │               │   ├── Product.java
+│   │   │   │               │   ├── Review.java
 │   │   │   │               │   ├── Role.java
 │   │   │   │               │   ├── User.java
-│   │   │   │               │   └── UserImage.java
+│   │   │   │               │   ├── UserImage.java
+│   │   │   │               │   └── Views
+│   │   │   │               │       ├── VDiscountsAnalysis.java
+│   │   │   │               │       ├── VLogsSummary.java
+│   │   │   │               │       ├── VModelsPopularity.java
+│   │   │   │               │       ├── VOrderDetail.java
+│   │   │   │               │       ├── VOrdersSummary.java
+│   │   │   │               │       ├── VReviewsSummary.java
+│   │   │   │               │       └── VUserStatistic.java
 │   │   │   │               ├── repository
 │   │   │   │               │   ├── CategoryRepository.java
+│   │   │   │               │   ├── DiscountRepository.java
+│   │   │   │               │   ├── DiscountTypeRepository.java
 │   │   │   │               │   ├── ImageRepository.java
 │   │   │   │               │   ├── ModelRepository.java
+│   │   │   │               │   ├── ModelStatusRepository.java
 │   │   │   │               │   ├── OrderItemRepository.java
 │   │   │   │               │   ├── OrderRepository.java
+│   │   │   │               │   ├── OrderStatusRepository.java
+│   │   │   │               │   ├── PaymentMethodRepository.java
 │   │   │   │               │   ├── PaymentRepository.java
+│   │   │   │               │   ├── PaymentStatusRepository.java
 │   │   │   │               │   ├── PermissionRepository.java
-│   │   │   │               │   ├── ProductRepository.java
+│   │   │   │               │   ├── ReviewRepository.java
 │   │   │   │               │   ├── RoleRepository.java
 │   │   │   │               │   ├── UserImageRepository.java
-│   │   │   │               │   └── UserRepository.java
+│   │   │   │               │   ├── UserRepository.java
+│   │   │   │               │   └── Views
+│   │   │   │               │       ├── VDiscountsAnalysisRepository.java
+│   │   │   │               │       ├── VLogsSummaryRepository.java
+│   │   │   │               │       ├── VModelsPopularityRepository.java
+│   │   │   │               │       ├── VOrderDetailRepository.java
+│   │   │   │               │       ├── VOrdersSummaryRepository.java
+│   │   │   │               │       ├── VReviewsSummaryRepository.java
+│   │   │   │               │       └── VUserStatisticRepository.java
 │   │   │   │               ├── security
 │   │   │   │               │   ├── Constants.java
 │   │   │   │               │   ├── CustomUserDetails.java
@@ -150,29 +230,61 @@
 │   │   │   │               │   ├── JwtTokenProvider.java
 │   │   │   │               │   └── SecurityConfig.java
 │   │   │   │               ├── service
-│   │   │   │               │   ├── AuthenticationService.java
 │   │   │   │               │   ├── CategoryService.java
+│   │   │   │               │   ├── DiscountService.java
+│   │   │   │               │   ├── DiscountTypeService.java
 │   │   │   │               │   ├── ImageService.java
+│   │   │   │               │   ├── ModelService.java
+│   │   │   │               │   ├── ModelStatusService.java
 │   │   │   │               │   ├── OrderItemService.java
 │   │   │   │               │   ├── OrderService.java
+│   │   │   │               │   ├── OrderStatusService.java
+│   │   │   │               │   ├── PaymentMethodService.java
 │   │   │   │               │   ├── PaymentService.java
+│   │   │   │               │   ├── PaymentStatusService.java
 │   │   │   │               │   ├── PermissionService.java
-│   │   │   │               │   ├── ProductService.java
+│   │   │   │               │   ├── ReviewService.java
 │   │   │   │               │   ├── RoleService.java
 │   │   │   │               │   ├── UserImageService.java
 │   │   │   │               │   ├── UserService.java
+│   │   │   │               │   ├── Views
+│   │   │   │               │   │   ├── VDiscountsAnalysisService.java
+│   │   │   │               │   │   ├── VLogsSummaryService.java
+│   │   │   │               │   │   ├── VModelsPopularityService.java
+│   │   │   │               │   │   ├── VOrderDetailService.java
+│   │   │   │               │   │   ├── VOrdersSummaryService.java
+│   │   │   │               │   │   ├── VReviewsSummaryService.java
+│   │   │   │               │   │   └── VUserStatisticService.java
 │   │   │   │               │   └── impl
-│   │   │   │               │       ├── AuthenticationServiceImpl.java
 │   │   │   │               │       ├── CategoryServiceImpl.java
+│   │   │   │               │       ├── DiscountServiceImpl.java
+│   │   │   │               │       ├── DiscountTypeServiceImpl.java
 │   │   │   │               │       ├── ImageServiceImpl.java
+│   │   │   │               │       ├── ModelServiceImpl.java
+│   │   │   │               │       ├── ModelStatusServiceImpl.java
+│   │   │   │               │       ├── OrderItemServiceImpl.java
 │   │   │   │               │       ├── OrderServiceImpl.java
+│   │   │   │               │       ├── OrderStatusServiceImpl.java
+│   │   │   │               │       ├── PaymentMethodServiceImpl.java
+│   │   │   │               │       ├── PaymentServiceImpl.java
+│   │   │   │               │       ├── PaymentStatusServiceImpl.java
 │   │   │   │               │       ├── PermissionServiceImpl.java
-│   │   │   │               │       ├── ProductServiceImpl.java
+│   │   │   │               │       ├── ReviewServiceImpl.java
 │   │   │   │               │       ├── RoleServiceImpl.java
 │   │   │   │               │       ├── UserImageServiceImpl.java
-│   │   │   │               │       └── UserServiceImpl.java
+│   │   │   │               │       ├── UserServiceImpl.java
+│   │   │   │               │       └── Views
+│   │   │   │               │           ├── VDiscountsAnalysisServiceImpl.java
+│   │   │   │               │           ├── VLogsSummaryServiceImpl.java
+│   │   │   │               │           ├── VModelsPopularityServiceImpl.java
+│   │   │   │               │           ├── VOrderDetailServiceImpl.java
+│   │   │   │               │           ├── VOrdersSummaryServiceImpl.java
+│   │   │   │               │           ├── VReviewsSummaryServiceImpl.java
+│   │   │   │               │           └── VUserStatisticServiceImpl.java
 │   │   │   │               └── util
 │   │   │   │                   ├── AccessValidator.java
+│   │   │   │                   ├── AuthenticationService.java
+│   │   │   │                   ├── AuthenticationServiceImpl.java
 │   │   │   │                   └── ValidationUtils.java
 │   │   │   ├── main.iml
 │   │   │   └── resources
@@ -181,6 +293,7 @@
 │   │   │       ├── application.yml
 │   │   │       └── db
 │   │   │           └── migration
+│   │   │               └── V001_add_additional_statuses_and_payment_methods.sql
 │   │   └── test
 │   │       └── java
 │   │           └── com
@@ -195,7 +308,8 @@
 ├── backup
 │   ├── Dockerfile
 │   ├── backup-cron
-│   └── backup.sh
+│   ├── backup.sh
+│   └── docker-entrypoint.sh
 ├── build_and_run.sh
 ├── database
 │   ├── Dockerfile
@@ -237,6 +351,7 @@
 ├── frontend
 │   ├── .gitignore
 │   ├── Dockerfile
+│   ├── docker-entrypoint.sh
 │   ├── index.html
 │   ├── node_modules
 │   ├── package.json
