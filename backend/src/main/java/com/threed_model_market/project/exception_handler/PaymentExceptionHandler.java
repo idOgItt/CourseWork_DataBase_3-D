@@ -1,5 +1,6 @@
 package com.threed_model_market.project.exception_handler;
 
+import com.threed_model_market.project.exception_handler.exceptions.Payment.PaymentNotFoundException;
 import com.threed_model_market.project.exception_handler.exceptions.PaymentMethod.PaymentMethodNotFoundException;
 import com.threed_model_market.project.exception_handler.exceptions.PaymentStatus.PaymentStatusNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,11 @@ public class PaymentExceptionHandler {
 
     @ExceptionHandler(PaymentStatusNotFoundException.class)
     public ResponseEntity<String> handlePaymentStatusNotFoundException(PaymentStatusNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(PaymentNotFoundException.class)
+    public ResponseEntity<String> handlePaymentNotFoundException(PaymentNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

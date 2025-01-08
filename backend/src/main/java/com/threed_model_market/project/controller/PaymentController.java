@@ -48,4 +48,22 @@ public class PaymentController {
         paymentService.deletePayment(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasAuthority('VIEW_PAYMENTS') or hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/")
+    public ResponseEntity<List<Payment>> getAllPayments(@RequestHeader("Authorization") String token) {
+        Long userIdFromToken = jwtTokenProvider.getUserIdFromJWT(token);
+        accessValidator.validateUserAccess(token, userIdFromToken);
+        return ResponseEntity.ok(paymentService.getAllPayments());
+    }
+
+    @PreAuthorize("hasAuthority('VIEW_PAYMENTS') or hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<Payment> getPaymentById(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+        Long userIdFromToken = jwtTokenProvider.getUserIdFromJWT(token);
+        accessValidator.validateUserAccess(token, userIdFromToken);
+        return ResponseEntity.ok(paymentService.getPaymentById(id));
+    }
+
+
 }

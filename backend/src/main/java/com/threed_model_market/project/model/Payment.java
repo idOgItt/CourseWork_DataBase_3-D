@@ -2,7 +2,6 @@ package com.threed_model_market.project.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +13,6 @@ import java.time.Instant;
 @Entity
 @Table(name = "payments")
 public class Payment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payments_id_gen")
     @SequenceGenerator(name = "payments_id_gen", sequenceName = "payments_paymentid_seq", allocationSize = 1)
@@ -29,19 +27,14 @@ public class Payment {
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
 
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "paymentmethod", nullable = false, length = 50)
-    private String paymentMethod;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "paymentmethodid", nullable = false)
+    private PaymentMethod paymentMethod;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "paymentstatusid", nullable = false)
+    private PaymentStatus paymentStatus;
 
     @Column(name = "paymentdate", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Instant paymentDate;
-
-    public enum PaymentMethod {
-        CREDIT_CARD, PAYPAL, BANK_TRANSFER, CASH
-    }
-
-    public enum Status {
-        PENDING, COMPLETED, FAILED, CANCELLED
-    }
 }
