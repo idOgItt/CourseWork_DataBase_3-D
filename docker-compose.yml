@@ -29,7 +29,7 @@ services:
     build:
       context: ./frontend
     ports:
-      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+      - "${FRONTEND_PORT}:${NGINX_PORT}"
     depends_on:
       - backend
     environment:
@@ -41,6 +41,11 @@ services:
     entrypoint: ["docker-entrypoint.sh"]
     volumes:
       - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   db:
     build:

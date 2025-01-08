@@ -348,20 +348,36 @@
 │   ├── testing
 │   │   └── test_plan.md
 │   └── user_guide.md
+├── env
 ├── frontend
 │   ├── .gitignore
 │   ├── Dockerfile
+│   ├── README.md
 │   ├── docker-entrypoint.sh
 │   ├── index.html
 │   ├── node_modules
 │   ├── package.json
 │   ├── public
+│   │   ├── favicon.ico
+│   │   └── images
 │   ├── src
-│   │   ├── App.js
+│   │   ├── App.jsx
+│   │   ├── api
 │   │   ├── assets
 │   │   ├── components
+│   │   ├── constants
+│   │   ├── hooks
 │   │   ├── index.js
+│   │   ├── locales
+│   │   │   ├── en.json
+│   │   │   └── ru.json
+│   │   ├── pages
+│   │   ├── routes
+│   │   ├── services
+│   │   ├── store
 │   │   └── styles
+│   │       ├── main.css
+│   │       └── theme.css
 │   ├── tests
 │   ├── vite.config.js
 │   └── yarn.lock
