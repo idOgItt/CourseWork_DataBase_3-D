@@ -6,6 +6,8 @@ GREEN="\033[0;32m"
 RED="\033[0;31m"
 NC="\033[0m"
 
+USE_NO_CACHE=false
+
 if [ -f .env ]; then
     echo -e "${GREEN}Загружаем переменные окружения из .env...${NC}"
     # shellcheck disable=SC2046
@@ -52,7 +54,8 @@ check_files() {
 }
 
 reset_and_build() {
-  echo -e "${GREEN}Запуск с флагом -reset приведёт к удалению кэша и пересборке всех образов.${NC}"
+    USE_NO_CACHE=true
+    echo -e "${GREEN}Запуск с флагом -reset приведёт к удалению кэша и пересборке всех образов.${NC}"
     echo -e "${GREEN}Очищаем кэш Docker...${NC}"
     docker system prune -a --volumes -f
 
@@ -99,7 +102,12 @@ if [[ "$1" == "-reset" ]]; then
 fi
 
 echo -e "${GREEN}Собираем Docker-образы...${NC}"
-docker-compose build | tee -a build.log
+
+if [ "$USE_NO_CACHE" = true ]; then
+    docker-compose build --no-cache | tee -a build.log
+else
+    docker-compose build | tee -a build.log
+fi
 
 echo -e "${GREEN}Запускаем контейнеры...${NC}"
 docker-compose up -d
