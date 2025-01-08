@@ -18,5 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @NonNull
     List<Order> findByUserId(@NonNull Long userId);
 
+    @SuppressWarnings("unused")
+    List<Order> findByStatus_Name(String status);
+
     void refresh(@NonNull Order order);
 }
