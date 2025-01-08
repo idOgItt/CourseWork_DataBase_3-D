@@ -1,4 +1,4 @@
-package com.threed_model_market.project.service;
+package com.threed_model_market.project.util;
 
 import com.threed_model_market.project.model.User;
 import org.springframework.security.core.GrantedAuthority;

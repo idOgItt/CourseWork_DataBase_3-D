@@ -1,4 +1,4 @@
-package com.threed_model_market.project.service.impl;
+package com.threed_model_market.project.util;
 
 import com.threed_model_market.project.config.PasswordConfig;
 import com.threed_model_market.project.exception_handler.exceptions.Role.RoleNotFoundException;
@@ -9,7 +9,6 @@ import com.threed_model_market.project.model.Role;
 import com.threed_model_market.project.model.User;
 import com.threed_model_market.project.repository.RoleRepository;
 import com.threed_model_market.project.repository.UserRepository;
-import com.threed_model_market.project.service.AuthenticationService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

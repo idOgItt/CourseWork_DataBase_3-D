@@ -11,7 +11,7 @@ import com.threed_model_market.project.model.User;
 import com.threed_model_market.project.repository.RoleRepository;
 import com.threed_model_market.project.repository.UserRepository;
 import com.threed_model_market.project.security.JwtTokenProvider;
-import com.threed_model_market.project.service.AuthenticationService;
+import com.threed_model_market.project.util.AuthenticationService;
 import com.threed_model_market.project.service.UserService;
 import jakarta.validation.constraints.Email;
 import org.slf4j.Logger;
