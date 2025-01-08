@@ -2,6 +2,15 @@
 
 set -e
 
+if [ -f .env ]; then
+    echo -e "${GREEN}Загружаем переменные окружения из .env...${NC}"
+    # shellcheck disable=SC2046
+    export $(grep -v '^#' .env | xargs)
+else
+    echo -e "${RED}.env файл не найден. Убедитесь, что он существует в текущей директории.${NC}"
+    exit 1
+fi
+
 GREEN="\033[0;32m"
 RED="\033[0;31m"
 NC="\033[0m"
@@ -67,7 +76,7 @@ if docker-compose ps | grep "Exit"; then
 fi
 
 echo -e "${GREEN}Все сервисы запущены. Доступ к ним:${NC}"
-echo -e "${GREEN}Backend: http://localhost:8080${NC}"
-echo -e "${GREEN}Frontend: http://localhost:3000${NC}"
-echo -e "${GREEN}PostgreSQL: localhost:5433 (user: user, password: password)${NC}"
+echo -e "${GREEN}Backend: http://localhost:${SERVER_PORT}${NC}"
+echo -e "${GREEN}Frontend: http://localhost:${FRONTEND_PORT}${NC}"
+echo -e "${GREEN}PostgreSQL: localhost:${DB_PORT} (user: ${DB_USER}, password: ${DB_PASSWORD})${NC}"
 echo -e "${GREEN}Для просмотра логов выполните: docker-compose logs -f${NC}"
