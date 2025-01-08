@@ -2,6 +2,10 @@
 
 set -e
 
+GREEN="\033[0;32m"
+RED="\033[0;31m"
+NC="\033[0m"
+
 if [ -f .env ]; then
     echo -e "${GREEN}Загружаем переменные окружения из .env...${NC}"
     # shellcheck disable=SC2046
@@ -11,9 +15,41 @@ else
     exit 1
 fi
 
-GREEN="\033[0;32m"
-RED="\033[0;31m"
-NC="\033[0m"
+check_required_files() {
+    local dir=$1
+    local files=("${@:2}")
+    for file in "${files[@]}"; do
+        if [ ! -f "${dir}/${file}" ]; then
+            echo -e "${RED}Файл ${file} не найден в директории ${dir}. Убедитесь, что он существует.${NC}"
+            exit 1
+        fi
+
+        if [ ! -x "${dir}/${file}" ]; then
+            echo -e "${GREEN}Устанавливаем ${file} как исполняемый...${NC}"
+            chmod +x "${dir}/${file}"
+        fi
+    done
+}
+
+check_files() {
+    echo -e "${GREEN}Проверяем необходимые файлы...${NC}"
+
+    if [ ! -f ./wait-for-it.sh ]; then
+        echo -e "${RED}Файл wait-for-it.sh не найден в текущей директории. Убедитесь, что он существует.${NC}"
+        exit 1
+    fi
+
+    if [ ! -x ./wait-for-it.sh ]; then
+        echo -e "${GREEN}Устанавливаем wait-for-it.sh как исполняемый...${NC}"
+        chmod +x ./wait-for-it.sh
+    fi
+
+    check_required_files "./backup" "backup.sh" "docker-entrypoint.sh"
+
+    check_required_files "./backend" "docker-entrypoint.sh"
+
+    check_required_files "./frontend" "docker-entrypoint.sh"
+}
 
 reset_and_build() {
     echo -e "${GREEN}Очищаем кэш Docker...${NC}"
@@ -54,6 +90,8 @@ if ! ping -c 1 google.com &> /dev/null; then
     echo -e "${RED}Проблемы с подключением к интернету. Проверьте сетевые настройки и попробуйте снова.${NC}"
     exit 1
 fi
+
+check_files
 
 if [[ "$1" == "-reset" ]]; then
     reset_and_build

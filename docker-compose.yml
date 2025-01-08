@@ -22,6 +22,8 @@ services:
     env_file:
       - .env
     entrypoint: ["docker-entrypoint.sh"]
+    volumes:
+      - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
 
   frontend:
     build:
@@ -37,6 +39,8 @@ services:
     env_file:
       - .env
     entrypoint: ["docker-entrypoint.sh"]
+    volumes:
+      - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
 
   db:
     build:
@@ -64,6 +68,7 @@ services:
       - ./database/backups:/backups
       - ./env:/env
       - ./logs:/var/log/cron
+      - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
     depends_on:
       - db
     environment:

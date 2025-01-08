@@ -1,15 +1,13 @@
-FROM alpine:latest
+FROM alpine:3.19
 
-RUN apk add --no-cache bash curl postgresql-client tzdata cron
+RUN apk update && apk add --no-cache bash curl postgresql tzdata dcron
 
 ENV TZ=Etc/UTC
 
-COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
 COPY backup.sh /usr/local/bin/backup.sh
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
-    /usr/local/bin/wait-for-it.sh \
     /usr/local/bin/backup.sh
 
 COPY backup-cron /etc/crontabs/root
