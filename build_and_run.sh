@@ -52,6 +52,7 @@ check_files() {
 }
 
 reset_and_build() {
+  echo -e "${GREEN}Запуск с флагом -reset приведёт к удалению кэша и пересборке всех образов.${NC}"
     echo -e "${GREEN}Очищаем кэш Docker...${NC}"
     docker system prune -a --volumes -f
 

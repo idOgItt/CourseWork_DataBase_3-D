@@ -11,6 +11,12 @@ sourceSets.main.resources.srcDir 'src/main/resources'
 
 tasks.named("processResources") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    doLast {
+        println("Processed resources:")
+        source.files.each { file ->
+            println file
+        }
+    }
 }
 
 repositories {
