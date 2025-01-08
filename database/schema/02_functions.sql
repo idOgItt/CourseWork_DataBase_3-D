@@ -191,22 +191,28 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE FUNCTION validate_model_availability() RETURNS TRIGGER AS $$
+DECLARE
+    v_user_id INT;
 BEGIN
+    SELECT UserID INTO v_user_id FROM Orders WHERE OrderID = NEW.OrderID;
+
     IF NOT check_model_availability(NEW.ModelID, NEW.Quantity) THEN
         PERFORM log_suspicious_action(
-                NEW.UserID,
+                v_user_id,
                 'SUSPICIOUS_MODEL_AVAILABILITY',
                 'Insufficient stock for ModelID: ' || NEW.ModelID
                 );
         RAISE EXCEPTION 'Insufficient stock for ModelID %', NEW.ModelID;
     END IF;
+
     RETURN NEW;
 
 EXCEPTION WHEN OTHERS THEN
+    SELECT UserID INTO v_user_id FROM Orders WHERE OrderID = NEW.OrderID;
     PERFORM log_exception(
-            NEW.UserID,
+            v_user_id,
             'EXCEPTION_LOG',
-            'Unhandled exception_handler in validate_model_availability: ' || SQLERRM
+            'Unhandled exception in validate_model_availability: ' || SQLERRM
             );
     RAISE;
 END;
@@ -261,4 +267,216 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION set_guest_role() RETURNS TRIGGER AS $$
+DECLARE
+    guest_role_id INT;
+BEGIN
+    SELECT RoleID INTO guest_role_id FROM Roles WHERE RoleName = 'GUEST';
+
+    IF guest_role_id IS NULL THEN
+        RAISE EXCEPTION 'There is no role GUEST in Roles.';
+    END IF;
+
+    UPDATE Users
+    SET RoleID = guest_role_id
+    WHERE RoleID = OLD.RoleID;
+
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION reduce_order_total_on_payment() RETURNS TRIGGER AS $$
+DECLARE
+    paid_status_id INT;
+BEGIN
+    SELECT statusid INTO paid_status_id FROM PaymentStatuses WHERE Name = 'PAID';
+
+    IF paid_status_id IS NULL THEN
+        RAISE EXCEPTION 'There is no status PAID in  PaymentStatuses.';
+    END IF;
+
+    IF NEW.PaymentStatusID = paid_status_id AND (OLD.PaymentStatusID IS DISTINCT FROM NEW.PaymentStatusID) THEN
+        UPDATE Orders
+        SET TotalAmount = TotalAmount - NEW.Amount
+        WHERE OrderID = NEW.OrderID;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION log_user_deletion() RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO Logs (UserID, ActionTypeID, Description, Timestamp)
+    VALUES (
+               OLD.UserID,
+               (SELECT ActionTypeID FROM ActionTypes WHERE ActionName = 'USER_DELETE'),
+               'User is deleted: ' || OLD.Username,
+               CURRENT_TIMESTAMP
+           );
+
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION log_order_status_change() RETURNS TRIGGER AS $$
+DECLARE
+    action_type_id INT;
+BEGIN
+    SELECT ActionTypeID INTO action_type_id FROM ActionTypes WHERE ActionName = 'ORDERS_UPDATE';
+
+    IF action_type_id IS NULL THEN
+        RAISE EXCEPTION 'ActionTypeID for ORDERS_UPDATE is NOT found.';
+    END IF;
+
+    INSERT INTO Logs (UserID, ActionTypeID, Description, Timestamp)
+    VALUES (
+               NEW.UserID,
+               action_type_id,
+               'The status is now: ' || (SELECT Name FROM OrderStatuses WHERE StatusID = NEW.StatusID),
+               CURRENT_TIMESTAMP
+           );
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION update_discount_usage_on_payment() RETURNS TRIGGER AS $$
+DECLARE
+    paid_status_id INT;
+    discount_code VARCHAR(50);
+BEGIN
+    SELECT StatusID INTO paid_status_id FROM PaymentStatuses WHERE Name = 'PAID';
+
+    IF paid_status_id IS NULL THEN
+        RAISE EXCEPTION 'There is no status PAID in PaymentStatuses.';
+    END IF;
+
+    IF NEW.PaymentStatusID = paid_status_id AND (OLD.PaymentStatusID IS DISTINCT FROM NEW.PaymentStatusID) THEN
+        SELECT DiscountCode INTO discount_code FROM Orders WHERE OrderID = NEW.OrderID;
+
+        IF discount_code IS NOT NULL THEN
+            UPDATE Discounts
+            SET TimesUsed = TimesUsed + 1
+            WHERE Code = discount_code;
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION log_discount_deletion() RETURNS TRIGGER AS $$
+DECLARE
+    action_type_id INT;
+BEGIN
+    SELECT ActionTypeID INTO action_type_id FROM ActionTypes WHERE ActionName = 'DISCOUNTS_DELETE';
+
+    IF action_type_id IS NULL THEN
+        RAISE EXCEPTION 'ActionTypeID for DISCOUNTS_DELETE is NOT found.';
+    END IF;
+
+    INSERT INTO Logs (UserID, ActionTypeID, Description, Timestamp)
+    VALUES (NULL, action_type_id, 'Discount is deleted: ' || OLD.Code, CURRENT_TIMESTAMP);
+
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION log_review_action_and_update_rating() RETURNS TRIGGER AS $$
+DECLARE
+    action_type_id INT;
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        SELECT ActionTypeID INTO action_type_id FROM ActionTypes WHERE ActionName = 'REVIEWS_INSERT';
+    ELSIF TG_OP = 'UPDATE' THEN
+        SELECT ActionTypeID INTO action_type_id FROM ActionTypes WHERE ActionName = 'REVIEWS_UPDATE';
+    END IF;
+
+    IF action_type_id IS NULL THEN
+        RAISE EXCEPTION 'ActionTypeID for % is not found.', TG_OP;
+    END IF;
+
+    INSERT INTO Logs (UserID, ActionTypeID, Description, Timestamp)
+    VALUES (
+               NEW.UserID,
+               action_type_id,
+               'Review ' || TG_OP || ': ' || NEW.Text,
+               CURRENT_TIMESTAMP
+           );
+
+    PERFORM calculate_model_rating(NEW.ModelID);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION log_image_upload() RETURNS TRIGGER AS $$
+DECLARE
+    action_type_id INT;
+BEGIN
+    SELECT ActionTypeID INTO action_type_id FROM ActionTypes WHERE ActionName = 'IMAGES_INSERT';
+
+    IF action_type_id IS NULL THEN
+        RAISE EXCEPTION 'ActionTypeID for IMAGES_INSERT is NOT found.';
+    END IF;
+
+    INSERT INTO Logs (UserID, ActionTypeID, Description, Timestamp)
+    VALUES (NULL, action_type_id, 'The image is uploaded: ' || NEW.FileName, CURRENT_TIMESTAMP);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION log_model_quantity_update() RETURNS TRIGGER AS $$
+DECLARE
+    action_type_id INT;
+BEGIN
+    SELECT ActionTypeID INTO action_type_id FROM ActionTypes WHERE ActionName = 'MODELS_QUANTITY_UPDATE';
+
+    IF action_type_id IS NULL THEN
+        RAISE EXCEPTION 'ActionTypeID for MODELS_QUANTITY_UPDATE is NOT found.';
+    END IF;
+
+    INSERT INTO Logs (UserID, ActionTypeID, Description, Timestamp)
+    VALUES (
+               NEW.UserID,
+               action_type_id,
+               'The quantity is changed for ModelID ' || NEW.ModelID || ': ' || OLD.QuantityAvailable || ' -> ' || NEW.QuantityAvailable,
+               CURRENT_TIMESTAMP
+           );
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION log_category_action() RETURNS TRIGGER AS $$
+DECLARE
+    action_type_id INT;
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        SELECT ActionTypeID INTO action_type_id FROM ActionTypes WHERE ActionName = 'CATEGORIES_INSERT';
+    ELSIF TG_OP = 'UPDATE' THEN
+        SELECT ActionTypeID INTO action_type_id FROM ActionTypes WHERE ActionName = 'CATEGORIES_UPDATE';
+    END IF;
+
+    IF action_type_id IS NULL THEN
+        RAISE EXCEPTION 'ActionTypeID for % is not found.', TG_OP;
+    END IF;
+
+    INSERT INTO Logs (UserID, ActionTypeID, Description, Timestamp)
+    VALUES (
+               NEW.UserID,
+               action_type_id,
+               'Category ' || TG_OP || ': ' || NEW.Name,
+               CURRENT_TIMESTAMP
+           );
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
