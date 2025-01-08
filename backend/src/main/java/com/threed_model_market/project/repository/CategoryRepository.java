@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@SuppressWarnings("unused")
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
+    @SuppressWarnings("unused")
     Category findByName(String name);
+
+    boolean existsById(Long categoryId);
 }

@@ -17,7 +17,6 @@ import java.util.List;
 @Entity
 @Table(name = "models")
 public class Model {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "models_id_gen")
     @SequenceGenerator(name = "models_id_gen", sequenceName = "models_modelid_seq", allocationSize = 1)
@@ -53,10 +52,9 @@ public class Model {
     @Column(name = "quantityavailable", nullable = false)
     private Integer quantityAvailable;
 
-    @Size(max = 20)
-    @NotNull
-    @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "statusid", nullable = false)
+    private ModelStatus status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "dateadded", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -67,8 +65,4 @@ public class Model {
 
     @OneToMany(mappedBy = "model", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
-
-    public enum Status {
-        ACTIVE, INACTIVE, ARCHIVED, PENDING
-    }
 }

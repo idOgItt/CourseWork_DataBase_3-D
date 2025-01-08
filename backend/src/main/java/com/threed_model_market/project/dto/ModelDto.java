@@ -17,7 +17,7 @@ public class ModelDto {
     private BigDecimal price;
     private BigDecimal rating;
     private Integer quantityAvailable;
-    private String status;
+    private String statusName;
     private List<ImageDto> images;
     private List<ReviewDto> reviews;
 }

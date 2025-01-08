@@ -91,7 +91,7 @@ CREATE TABLE Models (
                         CategoryID INT REFERENCES Categories(CategoryID),
                         Rating DECIMAL(3, 2) DEFAULT 0.0,
                         QuantityAvailable INT NOT NULL CHECK (QuantityAvailable >= 0),
-                        Status INT REFERENCES ModelStatuses(StatusID),
+                        StatusID INT REFERENCES ModelStatuses(StatusID),
                         DateAdded TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

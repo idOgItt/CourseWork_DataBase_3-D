@@ -31,6 +31,12 @@ public class ModelController {
         return ResponseEntity.ok(modelService.createModel(modelDto));
     }
 
+    @PreAuthorize("hasAuthority('VIEW_MODELS') or hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/")
+    public ResponseEntity<List<Model>> getAllModels() {
+        return ResponseEntity.ok(modelService.getAllModels());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Model> getModelById(@PathVariable Long id) {
         return ResponseEntity.ok(modelService.getModelById(id));
@@ -46,5 +52,11 @@ public class ModelController {
     public ResponseEntity<?> deleteModel(@PathVariable Long id) {
         modelService.deleteModel(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAuthority('MANAGE_MODELS') or hasAuthority('ROLE_ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<Model> updateModel(@PathVariable Long id, @RequestBody ModelDto modelDto) {
+        return ResponseEntity.ok(modelService.updateModel(id, modelDto));
     }
 }
