@@ -1,0 +1,41 @@
+.admin-panel {
+    text-align: center;
+    padding: 20px;
+}
+
+.admin-panel h1 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.admin-panel nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.admin-panel nav ul li {
+    margin: 10px 0;
+}
+
+.admin-panel nav ul li a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 1.2rem;
+}
+
+.admin-panel nav ul li a:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+@media (max-width: 768px) {
+    .admin-panel nav ul {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .admin-panel nav ul li {
+        margin: 5px 0;
+    }
+}
