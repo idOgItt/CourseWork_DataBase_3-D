@@ -31,6 +31,6 @@ public class PaymentStatus {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "paymentstatuses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "paymentStatus", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Payment> payments = new ArrayList<>();
 }

@@ -8,7 +8,7 @@ import org.springframework.lang.NonNull;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>, CustomOrderRepository {
 
     @EntityGraph(attributePaths = {"user", "discount"})
     @NonNull
@@ -20,6 +20,4 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @SuppressWarnings("unused")
     List<Order> findByStatus_Name(String status);
-
-    void refresh(@NonNull Order order);
 }

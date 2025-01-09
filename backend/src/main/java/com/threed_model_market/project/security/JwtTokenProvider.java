@@ -1,9 +1,8 @@
 package com.threed_model_market.project.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,22 +11,23 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.threed_model_market.project.security.Constants.*;
+import static com.threed_model_market.project.security.Constants.AUTHORITIES_KEY;
 
 @Component
 public class JwtTokenProvider {
 
-    @Value("${app.jwtSecret}")
-    private SecretKey jwtSecret;
+    private final SecretKey jwtSecret;
 
-    @Value("${app.jwtExpirationInMs}")
+    @Value("${spring.app.jwtExpirationInMs}")
     private long jwtExpirationInMs;
+
+    public JwtTokenProvider(@Value("${spring.app.jwtSecret}") String secret) {
+        this.jwtSecret = Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     public String getEmailFromJWT(String token) {
         Claims claims = getClaimsFromToken(token);
@@ -52,24 +52,17 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(final String email, final Long userId, final Collection<? extends GrantedAuthority> authorities) {
-        Key key = new SecretKeySpec(jwtSecret.getEncoded(), Jwts.SIG.HS512.toString());
-        return Jwts.builder()
-                .subject(email)
+        return Jwts.builder().subject(email)
                 .claim("userId", userId)
                 .claim(AUTHORITIES_KEY, authorities.stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.joining(",")))
-                .signWith(key)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + jwtExpirationInMs * 1000))
+                .signWith(jwtSecret).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
                 .compact();
     }
 
     public UsernamePasswordAuthenticationToken getAuthentication(final String token, final Authentication existingAuth, final CustomUserDetails userDetails) {
-
-        final JwtParser jwtParser = (JwtParser) Jwts.parser().verifyWith(jwtSecret);
-        final Jws<Claims> claimsJws = jwtParser.parseSignedClaims(token);
-        final Claims claims = claimsJws.getPayload();
+        final Claims claims = getClaimsFromToken(token);
 
         final Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))

@@ -29,6 +29,6 @@ public class PaymentMethod {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "paymentmethods", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "paymentMethod", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Payment> payments = new ArrayList<>();
 }

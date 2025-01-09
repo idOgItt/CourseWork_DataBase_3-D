@@ -25,7 +25,7 @@ public class Role {
     @Column(name = "rolename", unique = true)
     private String rolename;
 
-    @ManyToMany(mappedBy = "roles")
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("roles")
     private List<User> users = new ArrayList<>();
 
