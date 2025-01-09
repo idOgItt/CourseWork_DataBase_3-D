@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ReviewDto {
+    private Long id;
     private Long userId;
     private Long modelId;
     private String text;

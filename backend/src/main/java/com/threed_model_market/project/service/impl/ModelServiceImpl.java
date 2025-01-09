@@ -1,6 +1,8 @@
 package com.threed_model_market.project.service.impl;
 
 import com.threed_model_market.project.dto.ModelDto;
+import com.threed_model_market.project.dto.ImageDto;
+import com.threed_model_market.project.dto.ReviewDto;
 import com.threed_model_market.project.exception_handler.exceptions.Category.CategoryNotFoundException;
 import com.threed_model_market.project.exception_handler.exceptions.Model.ModelNotFoundException;
 import com.threed_model_market.project.exception_handler.exceptions.ModelStatus.ModelStatusNotFoundException;
@@ -14,6 +16,7 @@ import com.threed_model_market.project.service.ModelService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ModelServiceImpl implements ModelService {
@@ -31,7 +34,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public Model createModel(ModelDto modelDto) {
+    public ModelDto createModel(ModelDto modelDto) {
         User user = userRepository.findById(modelDto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + modelDto.getUserId()));
 
@@ -50,13 +53,13 @@ public class ModelServiceImpl implements ModelService {
         model.setQuantityAvailable(modelDto.getQuantityAvailable());
         model.setStatus(status);
 
-
-        return modelRepository.save(model);
+        return mapToDto(modelRepository.save(model));
     }
 
     @Override
-    public Model updateModel(Long id, ModelDto modelDto) {
-        Model model = getModelById(id);
+    public ModelDto updateModel(Long id, ModelDto modelDto) {
+        Model model = modelRepository.findById(id)
+                .orElseThrow(() -> new ModelNotFoundException("Model not found with ID: " + id));
 
         Category category = categoryRepository.findById(modelDto.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found with ID: " + modelDto.getCategoryId()));
@@ -71,39 +74,77 @@ public class ModelServiceImpl implements ModelService {
         model.setPrice(modelDto.getPrice());
         model.setQuantityAvailable(modelDto.getQuantityAvailable());
 
-        return modelRepository.save(model);
+        return mapToDto(modelRepository.save(model));
     }
 
     @Override
-    public List<Model> getAllModels() {
-        return modelRepository.findAll();
+    public List<ModelDto> getAllModels() {
+        List<Model> models = modelRepository.findAll();
+        return models.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Model getModelById(Long id) {
-        return modelRepository.findById(id)
+    public ModelDto getModelById(Long id) {
+        Model model = modelRepository.findById(id)
                 .orElseThrow(() -> new ModelNotFoundException("Model not found with ID: " + id));
+        return mapToDto(model);
     }
 
     @Override
-    public List<Model> getModelsByUserId(Long userId) {
+    public List<ModelDto> getModelsByUserId(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("User not found with ID: " + userId);
         }
-        return modelRepository.findByUserId(userId);
+        return modelRepository.findByUserId(userId).stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Model> getModelsByCategoryId(Long categoryId) {
+    public List<ModelDto> getModelsByCategoryId(Long categoryId) {
         if (!categoryRepository.existsById(categoryId)) {
             throw new CategoryNotFoundException("Category not found with ID: " + categoryId);
         }
-        return modelRepository.findByCategoryId(categoryId);
+        return modelRepository.findByCategoryId(categoryId).stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void deleteModel(Long id) {
-        Model model = getModelById(id);
+        Model model = modelRepository.findById(id)
+                .orElseThrow(() -> new ModelNotFoundException("Model not found with ID: " + id));
         modelRepository.delete(model);
+    }
+
+    private ModelDto mapToDto(Model model) {
+        ModelDto dto = new ModelDto();
+        dto.setId(model.getId());
+        dto.setUserId(model.getUser().getId());
+        dto.setCategoryId(Math.toIntExact(model.getCategory().getId()));
+        dto.setName(model.getName());
+        dto.setDescription(model.getDescription());
+        dto.setPrice(model.getPrice());
+        dto.setRating(model.getRating());
+        dto.setQuantityAvailable(model.getQuantityAvailable());
+        dto.setStatusName(model.getStatus().getName());
+        dto.setImages(model.getImages().stream()
+                .map(image -> new ImageDto(
+                        image.getModel().getId(),
+                        image.getFilename(),
+                        image.getFiledata()))
+                .collect(Collectors.toList()));
+        dto.setReviews(model.getReviews().stream()
+                .map(review -> {
+                    ReviewDto reviewDto = new ReviewDto();
+                    reviewDto.setId(review.getId());
+                    reviewDto.setText(review.getText());
+                    reviewDto.setRating(review.getRating());
+                    return reviewDto;
+                })
+                .collect(Collectors.toList()));
+        return dto;
     }
 }

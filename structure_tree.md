@@ -1,5 +1,6 @@
 ./
 ├── .env
+├── .gitattributes
 ├── .gitignore
 ├── 3D-Model_Market.iml
 ├── README.md
@@ -13,9 +14,235 @@
 │   │   │       │       └── threed_model_market
 │   │   │       │           └── project
 │   │   │       │               ├── Application.class
-│   │   │       │               └── config
-│   │   │       │                   ├── CorsConfig.class
-│   │   │       │                   └── RestApiConfig.class
+│   │   │       │               ├── config
+│   │   │       │               │   ├── CorsConfig.class
+│   │   │       │               │   ├── PasswordConfig.class
+│   │   │       │               │   └── RestApiConfig.class
+│   │   │       │               ├── controller
+│   │   │       │               │   ├── CategoryController.class
+│   │   │       │               │   ├── DiscountController.class
+│   │   │       │               │   ├── DiscountTypeController.class
+│   │   │       │               │   ├── ImageController.class
+│   │   │       │               │   ├── ModelController.class
+│   │   │       │               │   ├── ModelStatusController.class
+│   │   │       │               │   ├── OrderController.class
+│   │   │       │               │   ├── OrderItemController.class
+│   │   │       │               │   ├── OrderStatusController.class
+│   │   │       │               │   ├── PaymentController.class
+│   │   │       │               │   ├── PaymentMethodController.class
+│   │   │       │               │   ├── PaymentStatusController.class
+│   │   │       │               │   ├── PermissionController.class
+│   │   │       │               │   ├── ReviewController.class
+│   │   │       │               │   ├── RoleController.class
+│   │   │       │               │   ├── UserController.class
+│   │   │       │               │   ├── UserImageController.class
+│   │   │       │               │   └── Views
+│   │   │       │               │       ├── VDiscountsAnalysisController.class
+│   │   │       │               │       ├── VLogsSummaryController.class
+│   │   │       │               │       ├── VModelsPopularityController.class
+│   │   │       │               │       ├── VOrderDetailController.class
+│   │   │       │               │       ├── VOrdersSummaryController.class
+│   │   │       │               │       ├── VReviewsSummaryController.class
+│   │   │       │               │       └── VUserStatisticController.class
+│   │   │       │               ├── dto
+│   │   │       │               │   ├── CategoryDto.class
+│   │   │       │               │   ├── DiscountDto.class
+│   │   │       │               │   ├── DiscountTypeDto.class
+│   │   │       │               │   ├── ImageDto.class
+│   │   │       │               │   ├── ModelDto.class
+│   │   │       │               │   ├── ModelStatusDto.class
+│   │   │       │               │   ├── OrderDto.class
+│   │   │       │               │   ├── OrderItemDto.class
+│   │   │       │               │   ├── OrderStatusDto.class
+│   │   │       │               │   ├── PaymentDto.class
+│   │   │       │               │   ├── PaymentMethodDto.class
+│   │   │       │               │   ├── PaymentStatusDto.class
+│   │   │       │               │   ├── PermissionDto.class
+│   │   │       │               │   ├── ReviewDto.class
+│   │   │       │               │   ├── RoleDto.class
+│   │   │       │               │   ├── UserDto.class
+│   │   │       │               │   ├── UserImageDto.class
+│   │   │       │               │   └── Views
+│   │   │       │               │       ├── VDiscountsAnalysisDto.class
+│   │   │       │               │       ├── VLogsSummaryDto.class
+│   │   │       │               │       ├── VModelsPopularityDto.class
+│   │   │       │               │       ├── VOrderDetailDto.class
+│   │   │       │               │       ├── VOrdersSummaryDto.class
+│   │   │       │               │       ├── VReviewsSummaryDto.class
+│   │   │       │               │       └── VUserStatisticDto.class
+│   │   │       │               ├── exception_handler
+│   │   │       │               │   ├── CategoryExceptionHandler.class
+│   │   │       │               │   ├── DiscountExceptionHandler.class
+│   │   │       │               │   ├── GlobalExceptionHandler.class
+│   │   │       │               │   ├── ImageExceptionHandler.class
+│   │   │       │               │   ├── ModelExceptionHandler.class
+│   │   │       │               │   ├── OrderExceptionHandler.class
+│   │   │       │               │   ├── PaymentExceptionHandler.class
+│   │   │       │               │   ├── PermissionExceptionHandler.class
+│   │   │       │               │   ├── ReviewExceptionHandler.class
+│   │   │       │               │   ├── RoleExceptionHandler.class
+│   │   │       │               │   ├── UserExceptionHandler.class
+│   │   │       │               │   ├── UserImageExceptionHandler.class
+│   │   │       │               │   └── exceptions
+│   │   │       │               │       ├── Category
+│   │   │       │               │       │   └── CategoryNotFoundException.class
+│   │   │       │               │       ├── Discount
+│   │   │       │               │       │   └── DiscountNotFoundException.class
+│   │   │       │               │       ├── DiscountType
+│   │   │       │               │       │   └── DiscountTypeNotFoundException.class
+│   │   │       │               │       ├── Image
+│   │   │       │               │       │   └── ImageNotFoundException.class
+│   │   │       │               │       ├── Log
+│   │   │       │               │       │   └── LogNotFoundException.class
+│   │   │       │               │       ├── Model
+│   │   │       │               │       │   └── ModelNotFoundException.class
+│   │   │       │               │       ├── ModelStatus
+│   │   │       │               │       │   └── ModelStatusNotFoundException.class
+│   │   │       │               │       ├── Order
+│   │   │       │               │       │   └── OrderNotFoundException.class
+│   │   │       │               │       ├── OrderStatus
+│   │   │       │               │       │   └── OrderStatusNotFoundException.class
+│   │   │       │               │       ├── Patch
+│   │   │       │               │       │   └── PatchOperationNotSupportedException.class
+│   │   │       │               │       ├── Payment
+│   │   │       │               │       │   └── PaymentNotFoundException.class
+│   │   │       │               │       ├── PaymentMethod
+│   │   │       │               │       │   └── PaymentMethodNotFoundException.class
+│   │   │       │               │       ├── PaymentStatus
+│   │   │       │               │       │   └── PaymentStatusNotFoundException.class
+│   │   │       │               │       ├── Permission
+│   │   │       │               │       │   └── PermissionNotFoundException.class
+│   │   │       │               │       ├── Review
+│   │   │       │               │       │   └── ReviewNotFoundException.class
+│   │   │       │               │       ├── Role
+│   │   │       │               │       │   └── RoleNotFoundException.class
+│   │   │       │               │       ├── Security
+│   │   │       │               │       │   └── UnauthorizedAccessException.class
+│   │   │       │               │       ├── User
+│   │   │       │               │       │   ├── UserAlreadyExistsException.class
+│   │   │       │               │       │   ├── UserInvalidMailFormatException.class
+│   │   │       │               │       │   ├── UserInvalidPasswordException.class
+│   │   │       │               │       │   ├── UserNotFoundException.class
+│   │   │       │               │       │   └── UserNotFoundMailException.class
+│   │   │       │               │       └── UserImage
+│   │   │       │               │           └── UserImageNotFoundException.class
+│   │   │       │               ├── model
+│   │   │       │               │   ├── Category.class
+│   │   │       │               │   ├── Discount.class
+│   │   │       │               │   ├── DiscountType.class
+│   │   │       │               │   ├── Image.class
+│   │   │       │               │   ├── Model.class
+│   │   │       │               │   ├── ModelStatus.class
+│   │   │       │               │   ├── Order.class
+│   │   │       │               │   ├── OrderItem.class
+│   │   │       │               │   ├── OrderStatus.class
+│   │   │       │               │   ├── Payment.class
+│   │   │       │               │   ├── PaymentMethod.class
+│   │   │       │               │   ├── PaymentStatus.class
+│   │   │       │               │   ├── Permission.class
+│   │   │       │               │   ├── Review.class
+│   │   │       │               │   ├── Role.class
+│   │   │       │               │   ├── User$UserBuilder.class
+│   │   │       │               │   ├── User.class
+│   │   │       │               │   ├── UserImage.class
+│   │   │       │               │   └── Views
+│   │   │       │               │       ├── VDiscountsAnalysis.class
+│   │   │       │               │       ├── VLogsSummary.class
+│   │   │       │               │       ├── VModelsPopularity.class
+│   │   │       │               │       ├── VOrderDetail.class
+│   │   │       │               │       ├── VOrdersSummary.class
+│   │   │       │               │       ├── VReviewsSummary.class
+│   │   │       │               │       └── VUserStatistic.class
+│   │   │       │               ├── repository
+│   │   │       │               │   ├── CategoryRepository.class
+│   │   │       │               │   ├── DiscountRepository.class
+│   │   │       │               │   ├── DiscountTypeRepository.class
+│   │   │       │               │   ├── ImageRepository.class
+│   │   │       │               │   ├── ModelRepository.class
+│   │   │       │               │   ├── ModelStatusRepository.class
+│   │   │       │               │   ├── OrderItemRepository.class
+│   │   │       │               │   ├── OrderRepository.class
+│   │   │       │               │   ├── OrderStatusRepository.class
+│   │   │       │               │   ├── PaymentMethodRepository.class
+│   │   │       │               │   ├── PaymentRepository.class
+│   │   │       │               │   ├── PaymentStatusRepository.class
+│   │   │       │               │   ├── PermissionRepository.class
+│   │   │       │               │   ├── ReviewRepository.class
+│   │   │       │               │   ├── RoleRepository.class
+│   │   │       │               │   ├── UserImageRepository.class
+│   │   │       │               │   ├── UserRepository.class
+│   │   │       │               │   └── Views
+│   │   │       │               │       ├── VDiscountsAnalysisRepository.class
+│   │   │       │               │       ├── VLogsSummaryRepository.class
+│   │   │       │               │       ├── VModelsPopularityRepository.class
+│   │   │       │               │       ├── VOrderDetailRepository.class
+│   │   │       │               │       ├── VOrdersSummaryRepository.class
+│   │   │       │               │       ├── VReviewsSummaryRepository.class
+│   │   │       │               │       └── VUserStatisticRepository.class
+│   │   │       │               ├── security
+│   │   │       │               │   ├── Constants.class
+│   │   │       │               │   ├── CustomUserDetails.class
+│   │   │       │               │   ├── CustomUserDetailsService.class
+│   │   │       │               │   ├── JwtAuthenticationFilter.class
+│   │   │       │               │   ├── JwtTokenProvider.class
+│   │   │       │               │   └── SecurityConfig.class
+│   │   │       │               ├── service
+│   │   │       │               │   ├── CategoryService.class
+│   │   │       │               │   ├── DiscountService.class
+│   │   │       │               │   ├── DiscountTypeService.class
+│   │   │       │               │   ├── ImageService.class
+│   │   │       │               │   ├── ModelService.class
+│   │   │       │               │   ├── ModelStatusService.class
+│   │   │       │               │   ├── OrderItemService.class
+│   │   │       │               │   ├── OrderService.class
+│   │   │       │               │   ├── OrderStatusService.class
+│   │   │       │               │   ├── PaymentMethodService.class
+│   │   │       │               │   ├── PaymentService.class
+│   │   │       │               │   ├── PaymentStatusService.class
+│   │   │       │               │   ├── PermissionService.class
+│   │   │       │               │   ├── ReviewService.class
+│   │   │       │               │   ├── RoleService.class
+│   │   │       │               │   ├── UserImageService.class
+│   │   │       │               │   ├── UserService.class
+│   │   │       │               │   ├── Views
+│   │   │       │               │   │   ├── VDiscountsAnalysisService.class
+│   │   │       │               │   │   ├── VLogsSummaryService.class
+│   │   │       │               │   │   ├── VModelsPopularityService.class
+│   │   │       │               │   │   ├── VOrderDetailService.class
+│   │   │       │               │   │   ├── VOrdersSummaryService.class
+│   │   │       │               │   │   ├── VReviewsSummaryService.class
+│   │   │       │               │   │   └── VUserStatisticService.class
+│   │   │       │               │   └── impl
+│   │   │       │               │       ├── CategoryServiceImpl.class
+│   │   │       │               │       ├── DiscountServiceImpl.class
+│   │   │       │               │       ├── DiscountTypeServiceImpl.class
+│   │   │       │               │       ├── ImageServiceImpl.class
+│   │   │       │               │       ├── ModelServiceImpl.class
+│   │   │       │               │       ├── ModelStatusServiceImpl.class
+│   │   │       │               │       ├── OrderItemServiceImpl.class
+│   │   │       │               │       ├── OrderServiceImpl.class
+│   │   │       │               │       ├── OrderStatusServiceImpl.class
+│   │   │       │               │       ├── PaymentMethodServiceImpl.class
+│   │   │       │               │       ├── PaymentServiceImpl.class
+│   │   │       │               │       ├── PaymentStatusServiceImpl.class
+│   │   │       │               │       ├── PermissionServiceImpl.class
+│   │   │       │               │       ├── ReviewServiceImpl.class
+│   │   │       │               │       ├── RoleServiceImpl.class
+│   │   │       │               │       ├── UserImageServiceImpl.class
+│   │   │       │               │       ├── UserServiceImpl.class
+│   │   │       │               │       └── Views
+│   │   │       │               │           ├── VDiscountsAnalysisServiceImpl.class
+│   │   │       │               │           ├── VLogsSummaryServiceImpl.class
+│   │   │       │               │           ├── VModelsPopularityServiceImpl.class
+│   │   │       │               │           ├── VOrderDetailServiceImpl.class
+│   │   │       │               │           ├── VOrdersSummaryServiceImpl.class
+│   │   │       │               │           ├── VReviewsSummaryServiceImpl.class
+│   │   │       │               │           └── VUserStatisticServiceImpl.class
+│   │   │       │               └── util
+│   │   │       │                   ├── AccessValidator.class
+│   │   │       │                   ├── AuthenticationService.class
+│   │   │       │                   ├── AuthenticationServiceImpl.class
+│   │   │       │                   └── ValidationUtils.class
 │   │   │       └── test
 │   │   ├── generated
 │   │   │   └── sources
@@ -33,10 +260,36 @@
 │   │   ├── reports
 │   │   │   └── problems
 │   │   │       └── problems-report.html
+│   │   ├── resources
+│   │   │   └── main
+│   │   │       ├── META-INF
+│   │   │       │   └── additional-spring-configuration-metadata.json
+│   │   │       ├── application.yml
+│   │   │       └── db
+│   │   │           └── migration
+│   │   │               └── V001_add_additional_statuses_and_payment_methods.sql
 │   │   └── tmp
 │   │       ├── bootJar
 │   │       │   └── MANIFEST.MF
 │   │       ├── compileJava
+│   │       │   ├── compileTransaction
+│   │       │   │   ├── backup-dir
+│   │       │   │   └── stash-dir
+│   │       │   │       ├── Payment.class.uniqueId10
+│   │       │   │       ├── PaymentController.class.uniqueId11
+│   │       │   │       ├── PaymentMethod.class.uniqueId8
+│   │       │   │       ├── PaymentMethodController.class.uniqueId4
+│   │       │   │       ├── PaymentMethodRepository.class.uniqueId7
+│   │       │   │       ├── PaymentMethodService.class.uniqueId2
+│   │       │   │       ├── PaymentMethodServiceImpl.class.uniqueId13
+│   │       │   │       ├── PaymentRepository.class.uniqueId12
+│   │       │   │       ├── PaymentService.class.uniqueId1
+│   │       │   │       ├── PaymentServiceImpl.class.uniqueId14
+│   │       │   │       ├── PaymentStatus.class.uniqueId9
+│   │       │   │       ├── PaymentStatusController.class.uniqueId6
+│   │       │   │       ├── PaymentStatusRepository.class.uniqueId0
+│   │       │   │       ├── PaymentStatusService.class.uniqueId5
+│   │       │   │       └── PaymentStatusServiceImpl.class.uniqueId3
 │   │       │   └── previous-compilation-data.bin
 │   │       ├── compileTestJava
 │   │       │   └── previous-compilation-data.bin
@@ -350,11 +603,13 @@
 │   └── user_guide.md
 ├── env
 ├── frontend
+│   ├── .env
 │   ├── .gitignore
 │   ├── Dockerfile
 │   ├── README.md
 │   ├── docker-entrypoint.sh
 │   ├── index.html
+│   ├── nginx.conf.template
 │   ├── node_modules
 │   ├── package.json
 │   ├── public
@@ -363,19 +618,38 @@
 │   ├── src
 │   │   ├── App.jsx
 │   │   ├── api
+│   │   │   └── httpClient.jsx
 │   │   ├── assets
 │   │   ├── components
+│   │   │   ├── Navbar.jsx
+│   │   │   └── ProtectedRoute.jsx
 │   │   ├── constants
+│   │   ├── context
+│   │   │   └── CartContext.jsx
 │   │   ├── hooks
-│   │   ├── index.js
+│   │   │   └── useAuth.js
+│   │   ├── index.jsx
 │   │   ├── locales
 │   │   │   ├── en.json
 │   │   │   └── ru.json
 │   │   ├── pages
+│   │   │   ├── AdminPanel.jsx
+│   │   │   ├── CartPage.jsx
+│   │   │   ├── CatalogPage.jsx
+│   │   │   ├── CheckoutPage.jsx
+│   │   │   ├── HomePage.jsx
+│   │   │   ├── LoginPage.jsx
+│   │   │   ├── ManageCategories.jsx
+│   │   │   ├── ManageModels.jsx
+│   │   │   ├── ManageUsers.jsx
+│   │   │   ├── ModelDetailsPage.jsx
+│   │   │   └── RegisterPage.jsx
 │   │   ├── routes
+│   │   │   └── AppRoutes.jsx
 │   │   ├── services
 │   │   ├── store
 │   │   └── styles
+│   │       ├── HomePage.css
 │   │       ├── main.css
 │   │       └── theme.css
 │   ├── tests

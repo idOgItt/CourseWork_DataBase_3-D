@@ -1,22 +1,21 @@
 package com.threed_model_market.project.service;
 
 import com.threed_model_market.project.dto.ModelDto;
-import com.threed_model_market.project.model.Model;
 
 import java.util.List;
 
 public interface ModelService {
-    Model createModel(ModelDto modelDto);
+    ModelDto createModel(ModelDto modelDto);
 
-    Model updateModel(Long id, ModelDto modelDto);
+    ModelDto updateModel(Long id, ModelDto modelDto);
 
-    List<Model> getAllModels();
+    List<ModelDto> getAllModels();
 
-    Model getModelById(Long id);
+    ModelDto getModelById(Long id);
 
-    List<Model> getModelsByUserId(Long userId);
+    List<ModelDto> getModelsByUserId(Long userId);
 
-    List<Model> getModelsByCategoryId(Long categoryId);
+    List<ModelDto> getModelsByCategoryId(Long categoryId);
 
     void deleteModel(Long id);
 }

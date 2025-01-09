@@ -30,7 +30,7 @@ public class SecurityConfig {
          http
                 .authorizeHttpRequests(authCustomizer -> authCustomizer
                         .requestMatchers(HttpMethod.POST, "/api/models").permitAll()
-                        .requestMatchers("/api/register", "/api/authenticate").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/register", "/api/users/authenticate").permitAll()
                         .requestMatchers("/api/logs/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -41,7 +41,7 @@ public class SecurityConfig {
     }
 
 
-    @Bean
+    @Bean(name = "securityPasswordEncoder")
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

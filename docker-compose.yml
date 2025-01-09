@@ -24,6 +24,11 @@ services:
     entrypoint: ["docker-entrypoint.sh"]
     volumes:
       - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:${SERVER_PORT}/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   frontend:
     build:
@@ -45,7 +50,7 @@ services:
       test: [ "CMD", "curl", "-f", "http://localhost" ]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
 
   db:
     build:
@@ -81,6 +86,11 @@ services:
       DB_PORT: "${DB_PORT}"
       WAIT_TIMEOUT: 0
     entrypoint: ["docker-entrypoint.sh"]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   db_data:
